@@ -1,5 +1,125 @@
-import {reply,requireAdmin,isSameOrigin} from "./_auth.js";
-const cols="id,name,description,category,version,download_url,icon_url,created_at";
-function validate(d){const name=String(d.name||"").trim(),url=String(d.download_url||"").trim();if(!name||name.length>100)return "App name is required (max 100 characters)";if(!/^https:\/\//i.test(url)||url.length>2000)return "Download URL must be HTTPS";if(String(d.description||"").length>1000)return "Description is too long";if(d.icon_url&&!/^https:\/\//i.test(String(d.icon_url)))return "Icon URL must be HTTPS";return null;}
-export async function onRequestGet({env}){if(!env.DB)return reply({error:"Database binding DB is missing"},503);const {results=[]}=await env.DB.prepare("SELECT "+cols+" FROM apps ORDER BY created_at DESC,id DESC").all();return reply({apps:results});}
-export async function onRequestPost({request,env}){if(!isSameOrigin(request))return reply({error:"Invalid request origin"},403);if(!await requireAdmin(request,env))return reply({error:"Unauthorized"},401);let d;try{d=await request.json();}catch{return reply({error:"Invalid JSON"},400);}const err=validate(d);if(err)return reply({error:err},400);const r=await env.DB.prepare("INSERT INTO apps(name,description,category,version,download_url,icon_url) VALUES(?,?,?,?,?,?)").bind(String(d.name).trim(),String(d.description||"").trim(),String(d.category||"Other").trim(),String(d.version||"").trim(),String(d.download_url).trim(),String(d.icon_url||"").trim()).run();return reply({ok:true,id:r.meta.last_row_id},201);}
+// Shared auth + response helpers for SdmApk (Cloudflare Pages Functions).
+// This file exports no onRequest* handlers, so it is not a route.
+
+const enc = new TextEncoder();
+const COOKIE_NAME = "sdmapk_session";
+const SESSION_SECONDS = 8 * 60 * 60;
+
+function b64url(bytes) {
+  let s = "";
+  for (const b of bytes) s += String.fromCharCode(b);
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function fromB64url(s) {
+  s = s.replace(/-/g, "+").replace(/_/g, "/");
+  const bin = atob(s + "=".repeat((4 - (s.length % 4)) % 4));
+  return Uint8Array.from(bin, (c) => c.charCodeAt(0));
+}
+
+async function sign(value, secret) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  return b64url(new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(value))));
+}
+
+function safeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+export function reply(data, status = 200, headers = {}) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      ...headers,
+    },
+  });
+}
+
+// Browsers always send Origin on cross-site POST/PUT/DELETE. Reject if it differs.
+export function isSameOrigin(request) {
+  const origin = request.headers.get("Origin");
+  if (!origin) return true;
+  try {
+    return new URL(origin).origin === new URL(request.url).origin;
+  } catch {
+    return false;
+  }
+}
+
+export async function readJson(request, maxBytes = 20000) {
+  let text;
+  try {
+    text = await request.text();
+  } catch {
+    return { error: "Could not read the request body" };
+  }
+  if (text.length > maxBytes) return { error: "Request body is too large" };
+  try {
+    const data = JSON.parse(text);
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      return { error: "Request body must be a JSON object" };
+    }
+    return { data };
+  } catch {
+    return { error: "Request body is not valid JSON" };
+  }
+}
+
+export async function createSession(secret, username) {
+  const payload = b64url(
+    enc.encode(JSON.stringify({ u: username, exp: Date.now() + SESSION_SECONDS * 1000 }))
+  );
+  return payload + "." + (await sign(payload, secret));
+}
+
+export async function requireAdmin(request, env) {
+  if (!env.SESSION_SECRET) return false;
+  const cookies = request.headers.get("Cookie") || "";
+  const item = cookies
+    .split(";")
+    .map((x) => x.trim())
+    .find((x) => x.startsWith(COOKIE_NAME + "="));
+  if (!item) return false;
+  const token = item.slice(COOKIE_NAME.length + 1);
+  const dot = token.lastIndexOf(".");
+  if (dot < 1) return false;
+  const payload = token.slice(0, dot);
+  const signature = token.slice(dot + 1);
+  if (!safeEqual(signature, await sign(payload, env.SESSION_SECRET))) return false;
+  try {
+    const data = JSON.parse(new TextDecoder().decode(fromB64url(payload)));
+    return data.u === (env.ADMIN_USERNAME || "admin") && data.exp > Date.now();
+  } catch {
+    return false;
+  }
+}
+
+function isHttps(request) {
+  return new URL(request.url).protocol === "https:";
+}
+
+export function sessionCookie(token, request) {
+  return (
+    `${COOKIE_NAME}=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_SECONDS}` +
+    (isHttps(request) ? "; Secure" : "")
+  );
+}
+
+export function clearCookie(request) {
+  return (
+    `${COOKIE_NAME}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0` +
+    (isHttps(request) ? "; Secure" : "")
+  );
+}

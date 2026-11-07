@@ -1,38 +1,55 @@
-# AppNook Admin Upgrade — সেটআপ
+# SdmApk — সেটআপ গাইড
 
-## এই প্যাকেজে কী আছে
-- আগের AppNook-এর মতোই Public homepage, তবে অ্যাপগুলো D1 database থেকে আসবে
-- `/admin/login.html` — Admin login
-- `/admin/` — App add, edit, delete
-- `/api/apps` — Public read; write করতে valid Admin session লাগে
-- Session cookie: HttpOnly, Secure, SameSite=Strict, 8 ঘণ্টা মেয়াদ
-- Download এবং icon URL-এ HTTPS বাধ্যতামূলক
+SdmApk হলো আপনার নিজের অ্যাপ দেখানোর ওয়েবসাইট। যে কেউ অ্যাপ দেখে ডাউনলোড করতে পারবে, আর শুধু আপনি অ্যাডমিন প্যানেল থেকে সবকিছু বদলাতে পারবেন।
 
-## GitHub-এ আপলোড
-1. `AppNook` repository-এর `main` branch খুলুন।
-2. এই ZIP extract করে এর ভেতরের ফাইল/ফোল্ডারগুলো repository root-এ upload করুন।
-3. `index.html` ও `wrangler.toml` replace হবে; `admin/` এবং `functions/` নতুন যোগ হবে।
-4. Commit changes করুন। Cloudflare Pages auto deployment চালাবে।
+## ১. Cloudflare-এ তিনটি Variable দিন
+Cloudflare → Workers & Pages → আপনার Pages প্রজেক্ট → Settings → Variables and Secrets → Add:
 
-## Cloudflare Secrets
-Cloudflare → Workers & Pages → appnook → Settings → Variables and Secrets → Add:
-- `ADMIN_USERNAME` — Text variable; যেমন `admin`
-- `ADMIN_PASSWORD` — Secret; নিজের জন্য শক্তিশালী ও অন্য কোথাও ব্যবহার না করা password
-- `SESSION_SECRET` — Secret; অন্তত 32 অক্ষরের আলাদা random secret
+| নাম | ধরন | কী দেবেন |
+| --- | --- | --- |
+| `ADMIN_USERNAME` | Text | যেমন `admin` (নিজের পছন্দের নাম দিতে পারেন) |
+| `ADMIN_PASSWORD` | Secret | শক্তিশালী পাসওয়ার্ড, অন্য কোথাও ব্যবহার করবেন না |
+| `SESSION_SECRET` | Secret | কমপক্ষে ৩২ অক্ষরের এলোমেলো লেখা |
 
-কোনো password বা secret চ্যাটে পাঠাবেন না। এগুলো শুধু Cloudflare-এ নিজে লিখবেন। Save করার পর নতুন deployment নিশ্চিত করুন।
+`SESSION_SECRET` বানাতে পাসওয়ার্ড ম্যানেজারের "generate password" ব্যবহার করুন (৪০+ অক্ষর)।
 
-## Database
-`wrangler.toml`-এ বর্তমান D1 database ID বসানো আছে। Cloudflare Pages Settings → Bindings-এ D1 binding-এর Variable name অবশ্যই `DB` এবং database `appnook-db` হতে হবে।
-আগে তৈরি করা `apps` টেবিলের schema এই API-র সঙ্গে মিলে যায়:
-`id, name, description, category, version, download_url, icon_url, created_at`
+**গুরুত্বপূর্ণ:** পাসওয়ার্ড বা secret কখনো চ্যাটে, GitHub-এ বা কোডে লিখবেন না। শুধু Cloudflare-এর ঘরে নিজে লিখবেন। Save করার পর নতুন deployment করুন (Deployments → Retry deployment)।
 
-## ব্যবহার
-- Public site: `https://appnook.pages.dev/`
-- Admin login: `https://appnook.pages.dev/admin/login.html`
+## ২. D1 ডাটাবেস বাইন্ডিং
+Settings → Bindings → D1 database bindings-এ:
+- Variable name: `DB` (অবশ্যই এটাই)
+- Database: `appnook-db`
 
-প্রথমে Admin login দিয়ে প্রবেশ করে একটি test app যোগ করে public site-এ দেখা যাচ্ছে কি না পরীক্ষা করুন।
-GitHub ও Cloudflare account-এ 2FA চালু রাখুন; repository-তে কাউকে collaborator করবেন না যদি তাদের code access দিতে না চান।
+`wrangler.toml`-এ আগের database ID-ই আছে, বদলানো হয়নি।
 
-## গুরুত্বপূর্ণ
-GitHub repository public হলে source code দেখা যাবে, কিন্তু Admin password/secret source code-এ রাখা হয়নি। Visitor API দিয়ে শুধু app list পড়তে পারে; add/edit/delete-এর জন্য signed admin session আবশ্যক। এই starter-এ rate limiting অন্তর্ভুক্ত নয়, তাই শক্তিশালী password ব্যবহার করুন এবং account 2FA চালু রাখুন।
+## ৩. ডাটাবেসের migration (একবার)
+আপনার আগের `apps` টেবিল যেমন আছে তেমনই কাজ করবে, কোনো ডাটা মুছবে না। স্ক্রিনশট আর "লুকিয়ে রাখা (Hide) অ্যাপ" ফিচার চালু করতে একবার এই SQL চালান:
+
+Cloudflare → Storage & Databases → D1 → `appnook-db` → Console-এ পেস্ট করে Execute চাপুন:
+
+```sql
+ALTER TABLE apps ADD COLUMN screenshots TEXT NOT NULL DEFAULT '';
+ALTER TABLE apps ADD COLUMN published INTEGER NOT NULL DEFAULT 1;
+CREATE INDEX IF NOT EXISTS idx_apps_category ON apps(category);
+```
+
+এটা **শুধু একবার** চালাবেন। দ্বিতীয়বার চালালে "duplicate column" এরর আসবে, তাতে ক্ষতি হয় না। না চালালেও সাইট ঠিক চলবে, শুধু স্ক্রিনশট আর Hide কাজ করবে না (অ্যাডমিন প্যানেলে পরিষ্কার মেসেজ দেখাবে)।
+
+টেবিল একেবারে নতুন হলে আগে `migrations/0001_init.sql`-এর SQL চালান।
+
+## ৪. অ্যাপ (APK ফাইল) কোথায় রাখবেন
+Cloudflare Pages-এ প্রতিটি ফাইল ২৫ MB-এর বেশি হতে পারে না, তাই APK এই রিপোজিটরিতে রাখবেন না। সবচেয়ে সহজ উপায়:
+1. GitHub-এ রিপোজিটরির **Releases** → Create a new release → APK ফাইল upload করুন।
+2. APK-র লিংকটা কপি করুন (https দিয়ে শুরু)।
+3. অ্যাডমিন প্যানেলে "Download URL"-এ সেই লিংক বসান।
+
+## ৫. ব্যবহার
+- পাবলিক সাইট: আপনার Pages ঠিকানা, যেমন `https://appnook.pages.dev/`
+- অ্যাডমিন: `/admin/login.html` (সাইন ইন করার পর `/admin/`)
+- অ্যাডমিনে অ্যাপ যোগ, এডিট, লুকানো, ডিলিট, ক্যাটাগরির নাম বদল আর সার্চ করা যায়।
+- ডাউনলোড আর আইকনের লিংক অবশ্যই HTTPS হতে হবে।
+
+## ৬. পরে বদলাতে পারেন
+- যোগাযোগের তথ্য: `about/index.html`-এ "Contact" অংশে এখন লেখা আছে তথ্য এখনো দেওয়া হয়নি। নিজের আসল ইমেইল বা লিংক বসান।
+- GitHub ও Cloudflare অ্যাকাউন্টে 2FA চালু রাখুন।
+- এই স্টার্টারে লগইনে অতিরিক্ত rate limit নেই, তাই শক্তিশালী পাসওয়ার্ড দিন।

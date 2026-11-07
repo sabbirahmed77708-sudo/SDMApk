@@ -1,68 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AppNook Admin Login</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f5;
-      display: grid;
-      place-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    form {
-      background: white;
-      padding: 28px;
-      border-radius: 12px;
-      width: min(320px, 85%);
-    }
-    input, button {
-      box-sizing: border-box;
-      width: 100%;
-      padding: 12px;
-      margin-top: 12px;
-    }
-    button {
-      background: #222;
-      color: white;
-      border: 0;
-      border-radius: 6px;
-    }
-    #message { color: #c00; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin sign in · SdmApk</title>
+<meta name="theme-color" content="#3b4dff">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..800&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/admin.css">
+<script src="/assets/theme.js"></script>
 </head>
 <body>
-  <form id="loginForm">
-    <h2>AppNook Admin</h2>
-    <input name="username" placeholder="Username" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <button type="submit">Login</button>
-    <p id="message"></p>
-  </form>
-
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const form = new FormData(e.target);
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: form.get("username"),
-          password: form.get("password")
-        })
-      });
-
-      if (response.ok) {
-        location.href = "/admin/";
-      } else {
-        document.getElementById("message").textContent =
-          "Login failed. Please check your details.";
-      }
-    });
-  </script>
+<main class="login-wrap" id="main">
+<div class="login-card">
+<a class="brand" href="/" aria-label="SdmApk home"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="var(--brand)"/><path d="M32 14v22m0 0-9-9m9 9 9-9M18 46h28" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>SdmApk</a>
+<h1>Admin sign in</h1>
+<p class="hint">Sign in to manage apps and categories.</p>
+<form id="login-form" novalidate>
+<div class="field"><label for="username">Username</label><input id="username" name="username" autocomplete="username" required></div>
+<div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required></div>
+<button class="btn btn-primary btn-lg" type="submit" id="login-btn">Sign in</button>
+<p class="msg err" id="msg" role="alert"></p>
+</form>
+<p class="hint"><a href="/">Back to SdmApk</a></p>
+</div>
+</main>
+<script src="/assets/login.js" defer></script>
 </body>
 </html>
