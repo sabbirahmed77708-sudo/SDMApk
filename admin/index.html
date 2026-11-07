@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AppNook Admin</title>
+</head>
+<body>
+  <h1>AppNook Admin Panel</h1>
+
+  <button id="logout">Logout</button>
+
+  <h2>Add New App</h2>
+  <form id="appForm">
+    <input name="name" placeholder="App name" required>
+    <input name="description" placeholder="Description">
+    <input name="category" placeholder="Category">
+    <input name="version" placeholder="Version">
+    <input name="download_url" placeholder="Download URL" required>
+    <input name="icon_url" placeholder="Icon URL">
+    <button type="submit">Add App</button>
+  </form>
+
+  <h2>App List</h2>
+  <div id="apps">Loading...</div>
+
+  <script>
+    async function loadApps() {
+      const response = await fetch("/api/apps");
+      const apps = await response.json();
+      const container = document.getElementById("apps");
+      container.innerHTML = "";
+
+      apps.forEach(app => {
+        const item = document.createElement("div");
+        const title = document.createElement("h3");
+        title.textContent = app.name;
+        const info = document.createElement("p");
+        info.textContent = app.category || "";
+        const remove = document.createElement("button");
+        remove.textContent = "Delete";
+
+        remove.onclick = async () => {
+          if (!confirm("Delete this app?")) return;
+          await fetch(`/api/apps/${app.id}`, { method: "DELETE" });
+          loadApps();
+        };
+
+        item.append(title, info, remove);
+        container.appendChild(item);
+      });
+    }
+
+    document.getElementById("appForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+      const response = await fetch("/api/apps", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        e.target.reset();
+        loadApps();
+        alert("App added!");
+      } else {
+        alert("Could not add app. Please log in again.");
+      }
+    };
+
+    document.getElementById("logout").onclick = async () => {
+      await fetch("/api/logout", { method: "POST" });
+      location.href = "/admin/login.html";
+    };
+
+    fetch("/api/me").then(response => {
+      if (!response.ok) location.href = "/admin/login.html";
+      else loadApps();
+    });
+  </script>
+</body>
+</html>
