@@ -1,23 +1,27 @@
-# AppNook website
+# AppNook
 
-This is a responsive static app directory website.
+A responsive static app directory hosted with Cloudflare Pages.
 
-## Publish with GitHub Pages
-1. Open the `AppNook` repository on GitHub.
-2. Choose **Add file → Upload files**.
-3. Upload `index.html` from this folder and commit to `main`.
-4. Open **Settings → Pages**.
-5. Under **Build and deployment**, choose **Deploy from a branch**.
-6. Select branch `main`, folder `/(root)`, then press **Save**.
-7. Wait for the Pages deployment to finish. The site address will be shown in Settings → Pages.
+## What is included
+- Responsive layout for phones, tablets and computers
+- Live app search
+- Automatically generated category filters
+- App cards with platform details and official download links
+- Safe text rendering for app data
 
-## Add more apps
-Open `index.html` in a text editor and add another object inside the `apps` list in the `<script>` section. Each app needs:
-- `name`
-- `category` (Tools, Browsers, or Creative; add a matching category button if needed)
-- `icon` (emoji)
-- `platform`
-- `description`
-- `url` (prefer the official download page)
+## Add a new app
+1. Open `index.html` in GitHub and choose the pencil (Edit) icon.
+2. Find the `const apps = [` section.
+3. Add a new object before the closing `];`, with the same fields as this example:
 
-Only add apps and links that you have checked and trust.
+```js
+{name:"Example App",category:"Tools",icon:"🧰",platform:"Windows · Android",description:"A short description of the app.",url:"https://official-app-website.example/download"}
+```
+
+4. Use the app publisher's official download page for `url`.
+5. Commit the change to the `main` branch. Cloudflare Pages should automatically redeploy.
+
+You do not need to add a category button manually; the site creates category filters from the app list.
+
+## Important
+This is a static directory. Visitors can browse and search, but they cannot submit apps themselves. A public submission/admin system would need a backend and spam/security controls.
