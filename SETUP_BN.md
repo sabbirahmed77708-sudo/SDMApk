@@ -1,38 +1,38 @@
-# AppNook পূর্ণাঙ্গ সেটআপ (Cloudflare Pages + D1)
+# AppNook Admin Upgrade — সেটআপ
 
-এই সংস্করণে Public visitor শুধু অ্যাপ দেখবে/ডাউনলোড করবে। Admin login ছাড়া API-তে Add/Edit/Delete সম্ভব নয়। Admin password ও session secret কখনো HTML/JavaScript-এ রাখা হয়নি।
+## এই প্যাকেজে কী আছে
+- আগের AppNook-এর মতোই Public homepage, তবে অ্যাপগুলো D1 database থেকে আসবে
+- `/admin/login.html` — Admin login
+- `/admin/` — App add, edit, delete
+- `/api/apps` — Public read; write করতে valid Admin session লাগে
+- Session cookie: HttpOnly, Secure, SameSite=Strict, 8 ঘণ্টা মেয়াদ
+- Download এবং icon URL-এ HTTPS বাধ্যতামূলক
 
-## ১) GitHub-এ ফাইল আপলোড
-এই ZIP-এর সব ফাইল ও ফোল্ডার `AppNook` repository-র root-এ আপলোড করে `main` branch-এ commit করুন। পুরোনো `index.html` replace হবে; `admin/`, `functions/`, `migrations/`, `wrangler.toml` নতুন ফাইল।
+## GitHub-এ আপলোড
+1. `AppNook` repository-এর `main` branch খুলুন।
+2. এই ZIP extract করে এর ভেতরের ফাইল/ফোল্ডারগুলো repository root-এ upload করুন।
+3. `index.html` ও `wrangler.toml` replace হবে; `admin/` এবং `functions/` নতুন যোগ হবে।
+4. Commit changes করুন। Cloudflare Pages auto deployment চালাবে।
 
-## ২) D1 database তৈরি
-Cloudflare Dashboard → Workers & Pages → D1 SQL Database → Create database → নাম `appnook-db` দিন।
-Database-এর UUID কপি করুন। `wrangler.toml`-এর `REPLACE_WITH_YOUR_D1_DATABASE_ID` জায়গায় বসিয়ে commit করুন।
+## Cloudflare Secrets
+Cloudflare → Workers & Pages → appnook → Settings → Variables and Secrets → Add:
+- `ADMIN_USERNAME` — Text variable; যেমন `admin`
+- `ADMIN_PASSWORD` — Secret; নিজের জন্য শক্তিশালী ও অন্য কোথাও ব্যবহার না করা password
+- `SESSION_SECRET` — Secret; অন্তত 32 অক্ষরের আলাদা random secret
 
-## ৩) টেবিল তৈরি
-D1 database → Console-এ `migrations/0001_create_apps.sql` ফাইলের SQL চালান।
+কোনো password বা secret চ্যাটে পাঠাবেন না। এগুলো শুধু Cloudflare-এ নিজে লিখবেন। Save করার পর নতুন deployment নিশ্চিত করুন।
 
-## ৪) Pages Function binding
-Cloudflare Dashboard → Workers & Pages → appnook → Settings → Functions → D1 database bindings → Add binding:
-Variable name: `DB`
-D1 database: `appnook-db`
-Save করুন।
+## Database
+`wrangler.toml`-এ বর্তমান D1 database ID বসানো আছে। Cloudflare Pages Settings → Bindings-এ D1 binding-এর Variable name অবশ্যই `DB` এবং database `appnook-db` হতে হবে।
+আগে তৈরি করা `apps` টেবিলের schema এই API-র সঙ্গে মিলে যায়:
+`id, name, description, category, version, download_url, icon_url, created_at`
 
-## ৫) Admin secrets যোগ
-Settings → Variables and Secrets → Add:
-- `ADMIN_PASSWORD` (Secret): নিজের শক্তিশালী, অন্য কোথাও ব্যবহার না করা password
-- `SESSION_SECRET` (Secret): কমপক্ষে 32 random characters-এর আলাদা secret
-Save করে redeploy করুন। Password/secret কাউকে দেবেন না, এখানে চ্যাটেও পাঠাবেন না।
+## ব্যবহার
+- Public site: `https://appnook.pages.dev/`
+- Admin login: `https://appnook.pages.dev/admin/login.html`
 
-## ৬) Admin ব্যবহার
-Public site: `https://appnook.pages.dev/`
-Admin: `https://appnook.pages.dev/admin/login.html`
-শুধু নিজের ডিভাইসে লগইন করুন; কাজ শেষে Log out করুন।
+প্রথমে Admin login দিয়ে প্রবেশ করে একটি test app যোগ করে public site-এ দেখা যাচ্ছে কি না পরীক্ষা করুন।
+GitHub ও Cloudflare account-এ 2FA চালু রাখুন; repository-তে কাউকে collaborator করবেন না যদি তাদের code access দিতে না চান।
 
-## গুরুত্বপূর্ণ নিরাপত্তা ও সীমা
-- GitHub repository-তে collaborator access কাউকে দেবেন না। Public repo-তে source code সবাই দেখতে পারে; কিন্তু Cloudflare secrets ও D1 write API access পাবে না।
-- Admin password website source-এ নেই; API write endpoints HMAC-signed HttpOnly Secure cookie যাচাই করে।
-- HTTPS বাধ্যতামূলক cookie-এর জন্য।
-- প্রথমে public app list খালি থাকবে। Admin login করে অ্যাপ যোগ করুন।
-- এটি single-admin password login। Cloudflare account/GitHub account-এ 2FA চালু রাখুন।
-- D1 binding ও secrets configure না করলে admin/API কাজ করবে না; শুধু static site দেখা যাবে।
+## গুরুত্বপূর্ণ
+GitHub repository public হলে source code দেখা যাবে, কিন্তু Admin password/secret source code-এ রাখা হয়নি। Visitor API দিয়ে শুধু app list পড়তে পারে; add/edit/delete-এর জন্য signed admin session আবশ্যক। এই starter-এ rate limiting অন্তর্ভুক্ত নয়, তাই শক্তিশালী password ব্যবহার করুন এবং account 2FA চালু রাখুন।
