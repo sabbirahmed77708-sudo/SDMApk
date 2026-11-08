@@ -24,8 +24,6 @@
   SDM.api("/api/apps/" + id).then(function (d) {
     var a = d.app;
     var dl = SDM.safeUrl(a.download_url);
-    var host = "";
-    try { host = new URL(dl).hostname; } catch (e) {}
     var desc = a.description || "Download " + a.name + " from SdmApk.";
 
     document.title = a.name + " · SdmApk";
@@ -40,7 +38,6 @@
     if (a.version) rows += "<dt>Version</dt><dd>" + SDM.esc(String(a.version).replace(/^v/i, "")) + "</dd>";
     rows += "<dt>Category</dt><dd>" + SDM.esc(a.category || "Other") + "</dd>";
     if (a.created_at) rows += "<dt>Added</dt><dd>" + SDM.esc(SDM.fmtDate(a.created_at)) + "</dd>";
-    if (host) rows += "<dt>File hosted on</dt><dd>" + SDM.esc(host) + "</dd>";
 
     root.innerHTML =
       "<div>" +
@@ -60,7 +57,7 @@
       (dl
         ? '<a class="btn btn-primary btn-lg" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-5-5m5 5 5-5M5 20h14"/></svg>Download ' + SDM.esc(a.name) + "</a>"
         : '<p class="note">No download link is available for this app yet.</p>') +
-      '<p class="note">The file is hosted on a separate service. Only install apps from sources you trust, and check the file before you open it.</p></aside>';
+      '<p class="note">Only install apps from sources you trust.</p></aside>';
   }).catch(function (err) {
     if (err.status === 404) notFound("App not found", "This app was removed or is not published. Browse the list to find something else.");
     else notFound("App did not load", "We could not load this app. Check your connection and refresh the page.");
