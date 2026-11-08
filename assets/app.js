@@ -85,31 +85,28 @@
     if (icon) setMeta('meta[property="og:image"]', "content", icon);
 
     var shots = (a.screenshots || []).map(SDM.safeUrl).filter(Boolean);
-    var rows = "";
-    if (a.version) rows += "<dt>Version</dt><dd>" + SDM.esc(String(a.version).replace(/^v/i, "")) + "</dd>";
-    rows += "<dt>Category</dt><dd>" + SDM.esc(a.category || "Other") + "</dd>";
-    if (a.created_at) rows += "<dt>Added</dt><dd>" + SDM.esc(SDM.fmtDate(a.created_at)) + "</dd>";
+    var DL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-5-5m5 5 5-5M5 20h14"/></svg>';
+    var stats = "";
+    if (a.version) stats += '<div><b>' + SDM.esc(String(a.version).replace(/^v/i, "")) + "</b><span>Version</span></div>";
+    stats += '<div><b>' + SDM.esc(a.category || "Other") + "</b><span>Category</span></div>";
+    if (a.created_at) stats += '<div><b>' + SDM.esc(SDM.fmtDate(a.created_at)) + "</b><span>Added</span></div>";
 
     root.innerHTML =
-      "<div>" +
-      '<div class="detail-head">' + SDM.iconHTML(a) +
-      "<div><h1>" + SDM.esc(a.name) + '</h1><div class="meta"><span class="chip">' + SDM.esc(a.category || "Other") + "</span>" +
-      (a.version ? '<span class="chip chip-plain">v' + SDM.esc(String(a.version).replace(/^v/i, "")) + "</span>" : "") +
-      "</div></div></div>" +
-      (dl ? '<a class="btn btn-primary btn-lg cta-mobile" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-5-5m5 5 5-5M5 20h14"/></svg>Download ' + SDM.esc(a.name) + "</a>" : "") +
-      '<section class="block"><h2>About this app</h2><p class="prose">' + (a.description ? SDM.esc(a.description) : "No description has been added yet.") + "</p></section>" +
+      '<div class="pd-top"><div class="pd-head">' + SDM.iconHTML(a) +
+      "<div><h1>" + SDM.esc(a.name) + '</h1><p class="pd-sub">' + SDM.esc(a.category || "Other") + "</p></div></div>" +
+      (dl
+        ? '<a class="btn btn-primary btn-lg pd-dl" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow">' + DL + "Download</a>"
+        : '<p class="note">No download link is available for this app yet.</p>') +
+      "</div>" +
+      '<div class="pd-stats">' + stats + "</div>" +
       (shots.length
         ? '<section class="block"><h2>Screenshots</h2><div class="shots" tabindex="0" role="group" aria-label="Screenshots of ' + SDM.esc(a.name) + '">' +
-          shots.map(function (s, i) {
-            return '<button type="button" class="shot" data-i="' + i + '" aria-label="View screenshot ' + (i + 1) + ' of ' + shots.length + ' larger"><img src="' + SDM.esc(s) + '" alt="' + SDM.esc(a.name) + " screenshot " + (i + 1) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer"></button>';
+          shots.map(function (u, i) {
+            return '<button type="button" class="shot" data-i="' + i + '" aria-label="View screenshot ' + (i + 1) + ' of ' + shots.length + ' larger"><img src="' + SDM.esc(u) + '" alt="' + SDM.esc(a.name) + " screenshot " + (i + 1) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer"></button>';
           }).join("") + "</div></section>"
         : "") +
-      "</div>" +
-      '<aside class="panel" aria-labelledby="dl-title"><h2 id="dl-title">Download</h2><dl>' + rows + "</dl>" +
-      (dl
-        ? '<a class="btn btn-primary btn-lg" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-5-5m5 5 5-5M5 20h14"/></svg>Download ' + SDM.esc(a.name) + "</a>"
-        : '<p class="note">No download link is available for this app yet.</p>') +
-      '<p class="note">Only install apps from sources you trust.</p></aside>';
+      '<section class="block"><h2>About this app</h2><p class="prose">' + (a.description ? SDM.esc(a.description) : "No description has been added yet.") + "</p></section>" +
+      '<p class="note">Only install apps from sources you trust.</p>';
     if (shots.length) setupViewer(shots, a.name);
   }).catch(function (err) {
     if (err.status === 404) notFound("App not found", "This app was removed or is not published. Browse the list to find something else.");

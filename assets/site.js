@@ -70,20 +70,23 @@
   SDM.cardHTML = function (app) {
     var dl = SDM.safeUrl(app.download_url);
     var detailHref = "/app/?id=" + encodeURIComponent(app.id);
+    var shots = (app.screenshots || []).map(SDM.safeUrl).filter(Boolean).slice(0, 5);
+    var sub = SDM.esc(app.category || "Other") + (app.version ? " · v" + SDM.esc(String(app.version).replace(/^v/i, "")) : "");
     return (
       '<article class="card">' +
       '<div class="card-top">' + SDM.iconHTML(app) +
-      '<div><h3><a href="' + detailHref + '">' + SDM.esc(app.name) + "</a></h3>" +
-      '<div class="meta"><span class="chip">' + SDM.esc(app.category || "Other") + "</span>" +
-      (app.version ? '<span class="chip chip-plain">v' + SDM.esc(String(app.version).replace(/^v/i, "")) + "</span>" : "") +
-      "</div></div></div>" +
-      '<p class="card-desc">' + (app.description ? SDM.esc(app.description) : "No description yet.") + "</p>" +
-      '<div class="card-actions">' +
-      '<a class="btn btn-ghost" href="' + detailHref + '">Details</a>' +
+      '<div class="card-id"><h3><a href="' + detailHref + '">' + SDM.esc(app.name) + "</a></h3>" +
+      '<p class="card-sub">' + sub + "</p></div>" +
       (dl
-        ? '<a class="btn btn-primary" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow" aria-label="Download ' + SDM.esc(app.name) + '">' + ARROW + "Download</a>"
+        ? '<a class="btn btn-primary btn-sm-dl" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow" aria-label="Download ' + SDM.esc(app.name) + '">Download</a>'
         : "") +
-      "</div></article>"
+      "</div>" +
+      (shots.length
+        ? '<div class="card-shots">' + shots.map(function (u, i) {
+            return '<a href="' + detailHref + '" tabindex="-1" aria-hidden="true"><img src="' + SDM.esc(u) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>';
+          }).join("") + "</div>"
+        : "") +
+      '<p class="card-desc">' + (app.description ? SDM.esc(app.description) : "No description yet.") + "</p></article>"
     );
   };
 
