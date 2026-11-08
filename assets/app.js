@@ -96,6 +96,7 @@
       "<div><h1>" + SDM.esc(a.name) + '</h1><div class="meta"><span class="chip">' + SDM.esc(a.category || "Other") + "</span>" +
       (a.version ? '<span class="chip chip-plain">v' + SDM.esc(String(a.version).replace(/^v/i, "")) + "</span>" : "") +
       "</div></div></div>" +
+      (dl ? '<a class="btn btn-primary btn-lg cta-mobile" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-5-5m5 5 5-5M5 20h14"/></svg>Download ' + SDM.esc(a.name) + "</a>" : "") +
       '<section class="block"><h2>About this app</h2><p class="prose">' + (a.description ? SDM.esc(a.description) : "No description has been added yet.") + "</p></section>" +
       (shots.length
         ? '<section class="block"><h2>Screenshots</h2><div class="shots" tabindex="0" role="group" aria-label="Screenshots of ' + SDM.esc(a.name) + '">' +

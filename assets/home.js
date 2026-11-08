@@ -5,7 +5,7 @@
   var S = { apps: [], q: "", cat: "", sort: "newest" };
 
   var els = {
-    heroForm: $("hero-search"), heroQ: $("q"), heroCount: $("hero-count"),
+    heroChips: $("hero-chips"), heroForm: $("hero-search"), heroQ: $("q"), heroCount: $("hero-count"),
     stage: $("hero-stage"), home: $("home-grid"),
     featuredSec: $("featured-section"), featured: $("featured"),
     catSec: $("categories-section"), cats: $("cat-grid"),
@@ -62,6 +62,9 @@
       return '<button type="button" class="cat" data-cat="' + SDM.esc(c.name) + '" aria-pressed="' + (S.cat === c.name) + '">' +
         '<span class="cat-ico">' + SDM.catIcon(c.name) + "</span>" +
         "<span><b>" + SDM.esc(c.name) + "</b><small>" + c.count + (c.count === 1 ? " app" : " apps") + "</small></span></button>";
+    }).join("");
+    els.heroChips.innerHTML = cats.slice(0, 5).map(function (c) {
+      return '<button type="button" data-cat="' + SDM.esc(c.name) + '">' + SDM.esc(c.name) + "</button>";
     }).join("");
     els.filterCat.innerHTML = '<option value="">All categories</option>' + cats.map(function (c) {
       return '<option value="' + SDM.esc(c.name) + '"' + (S.cat === c.name ? " selected" : "") + ">" + SDM.esc(c.name) + "</option>";
@@ -174,6 +177,14 @@
     var b = e.target.closest(".cat");
     if (!b) return;
     S.cat = S.cat === b.dataset.cat ? "" : b.dataset.cat;
+    update();
+    $("explore").scrollIntoView();
+  });
+  els.heroChips.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    S.cat = b.dataset.cat;
+    S.q = "";
     update();
     $("explore").scrollIntoView();
   });
