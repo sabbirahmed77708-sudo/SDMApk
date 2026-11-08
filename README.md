@@ -2,6 +2,8 @@
 
 Discover. Download. Enjoy.
 
+Live site: https://sdmapk.pages.dev/
+
 SdmApk is an Android app directory built on Cloudflare Pages Functions and a D1 database.
 
 - Public site: browse, search, filter by category, open an app page and download.
