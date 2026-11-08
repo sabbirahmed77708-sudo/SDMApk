@@ -1,5 +1,5 @@
 import { reply, isSameOrigin, readJson, requireAdmin } from "../_auth.js";
-import { getColumns, selectList, shapeApp, normalizeApp, parseId } from "../_apps.js";
+import { getColumns, ensureColumns, selectList, shapeApp, normalizeApp, parseId } from "../_apps.js";
 
 // GET /api/apps/:id — public details for one published app (admins also see hidden ones).
 export async function onRequestGet({ request, env, params }) {
@@ -34,7 +34,7 @@ export async function onRequestPut({ request, env, params }) {
   if (body.error) return reply({ error: body.error }, 400);
 
   try {
-    const cols = await getColumns(env);
+    const cols = await ensureColumns(env);
     const checked = normalizeApp(body.data, cols);
     if (checked.error) return reply({ error: checked.error }, checked.status || 400);
 

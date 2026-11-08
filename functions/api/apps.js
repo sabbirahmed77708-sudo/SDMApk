@@ -1,5 +1,5 @@
 import { reply, isSameOrigin, readJson, requireAdmin } from "./_auth.js";
-import { getColumns, selectList, shapeApp, normalizeApp } from "./_apps.js";
+import { getColumns, ensureColumns, selectList, shapeApp, normalizeApp } from "./_apps.js";
 
 // GET /api/apps — public list of published apps.
 // Admins can add ?all=1 to also receive hidden (unpublished) apps.
@@ -32,7 +32,7 @@ export async function onRequestPost({ request, env }) {
   if (body.error) return reply({ error: body.error }, 400);
 
   try {
-    const cols = await getColumns(env);
+    const cols = await ensureColumns(env);
     const checked = normalizeApp(body.data, cols);
     if (checked.error) return reply({ error: checked.error }, checked.status || 400);
 

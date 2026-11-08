@@ -79,7 +79,7 @@
     $("s-cats").textContent = cats.length;
 
     var recent = apps.slice().sort(byNewest).slice(0, 5);
-    $("recent").innerHTML = recent.length ? recent.map(function (a) { return rowHTML(a, false); }).join("") : '<p class="hint">No apps yet. Add your first app below.</p>';
+    $("recent").innerHTML = recent.length ? recent.map(function (a) { return rowHTML(a, false); }).join("") : '<p class="hint">No apps yet. Add your first app above.</p>';
 
     renderApps();
 
@@ -101,6 +101,10 @@
     var names = PRESETS.slice();
     cats.forEach(function (c) { if (names.indexOf(c.name) < 0) names.push(c.name); });
     $("cat-list").innerHTML = names.map(function (n) { return '<option value="' + esc(n) + '"></option>'; }).join("");
+    $("cat-pick").innerHTML = names.map(function (n) {
+      return '<button type="button" data-cat="' + esc(n) + '" aria-pressed="false">' + esc(n) + "</button>";
+    }).join("");
+    markCat();
 
     var input = $("rename-input");
     if (input) { input.focus(); input.select(); }
@@ -130,8 +134,67 @@
     return apps.filter(function (a) { return String(a.id) === String(id); })[0];
   }
 
+  // Quick category buttons mirror the category field.
+  function markCat() {
+    var cur = $("f-category").value.trim().toLowerCase();
+    Array.prototype.forEach.call($("cat-pick").querySelectorAll("button"), function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.cat.toLowerCase() === cur));
+    });
+  }
+  $("cat-pick").addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    $("f-category").value = b.getAttribute("aria-pressed") === "true" ? "" : b.dataset.cat;
+    markCat();
+  });
+  $("f-category").addEventListener("input", markCat);
+
+  // Guess the app name and version from a download link such as
+  // https://github.com/you/repo/releases/download/v1.2/My-App.apk
+  function guess(url) {
+    var out = { name: "", version: "" };
+    var u;
+    try { u = new URL(url); } catch (e) { return out; }
+    if (u.protocol !== "https:") return out;
+    var parts = u.pathname.split("/").filter(Boolean).map(function (p) {
+      try { return decodeURIComponent(p); } catch (e) { return p; }
+    });
+    var file = parts[parts.length - 1] || "";
+    var base = file.replace(/\.(apk|xapk|apks|zip)$/i, "");
+    var ver = base.match(/(?:^|[-_ .])v?(\d+(?:\.\d+)+)/i);
+    if (!ver) {
+      var di = parts.indexOf("download");
+      var tag = di >= 0 ? parts[di + 1] || "" : "";
+      ver = tag.match(/^v?(\d+(?:\.\d+)*)/i);
+    }
+    if (ver) out.version = ver[1];
+    var name = base.replace(/[-_.]+v?\d+(?:\.\d+)*.*$/i, "").replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+    if (name && name.length <= 100) out.name = name;
+    return out;
+  }
+  var autoName = "";
+  var autoVersion = "";
+  function autofill() {
+    if ($("app-id").value) return;
+    var g = guess($("f-download").value.trim());
+    var filled = [];
+    if (g.name && ($("f-name").value === "" || $("f-name").value === autoName)) {
+      $("f-name").value = g.name; autoName = g.name; filled.push("name");
+    }
+    if (g.version && ($("f-version").value === "" || $("f-version").value === autoVersion)) {
+      $("f-version").value = g.version; autoVersion = g.version; filled.push("version");
+    }
+    $("auto-note").textContent = filled.length ? "Filled in the " + filled.join(" and ") + " from the link. Change it if it is not right." : "";
+  }
+  $("f-download").addEventListener("input", autofill);
+  $("f-download").addEventListener("change", autofill);
+
   function resetForm() {
     $("app-form").reset();
+    autoName = ""; autoVersion = "";
+    $("auto-note").textContent = "";
+    $("more").open = false;
+    markCat();
     $("app-id").value = "";
     $("f-published").checked = true;
     $("form-title").textContent = "Add an app";
@@ -172,7 +235,7 @@
     api(editing ? "/api/apps/" + encodeURIComponent(id) : "/api/apps", { method: editing ? "PUT" : "POST", body: d })
       .then(function () {
         resetForm();
-        say(editing ? "Changes saved." : "App added.", "ok");
+        say(editing ? "Changes saved." : "App added. It is live on the site now.", "ok");
         return load();
       })
       .catch(function (err) { say(err.message, "err"); })
@@ -197,6 +260,9 @@
       $("f-desc").value = a.description || "";
       $("f-shots").value = (a.screenshots || []).join("\n");
       $("f-published").checked = a.published !== false;
+      $("more").open = !!(a.icon_url || (a.screenshots && a.screenshots.length) || a.published === false);
+      markCat();
+      $("auto-note").textContent = "";
       $("form-title").textContent = "Edit app";
       $("save").textContent = "Save changes";
       $("cancel").hidden = false;

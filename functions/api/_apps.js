@@ -21,6 +21,28 @@ export async function getColumns(env) {
   return new Set(results.map((r) => r.name));
 }
 
+// Adds the optional columns when they are missing, so no manual SQL is needed.
+// Called only from admin-only write handlers.
+export async function ensureColumns(env) {
+  let cols = await getColumns(env);
+  const wanted = [
+    ["screenshots", "ALTER TABLE apps ADD COLUMN screenshots TEXT NOT NULL DEFAULT ''"],
+    ["published", "ALTER TABLE apps ADD COLUMN published INTEGER NOT NULL DEFAULT 1"],
+  ];
+  let changed = false;
+  for (const [name, sql] of wanted) {
+    if (cols.has(name)) continue;
+    try {
+      await env.DB.prepare(sql).run();
+      changed = true;
+    } catch {
+      // Another request may have added it first; the re-read below settles it.
+    }
+  }
+  if (changed || !cols.has("screenshots") || !cols.has("published")) cols = await getColumns(env);
+  return cols;
+}
+
 export function selectList(cols) {
   const list = [...BASE_COLUMNS];
   if (cols.has("screenshots")) list.push("screenshots");

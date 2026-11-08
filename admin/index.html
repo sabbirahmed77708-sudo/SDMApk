@@ -29,6 +29,33 @@
 <h1>Dashboard</h1>
 <p class="a-sub">Add, change and remove the apps that visitors see on SdmApk.</p>
 
+<section class="a-panel" id="form-panel" aria-labelledby="form-title">
+<h2 id="form-title">Add an app</h2>
+<p class="hint mb10" id="form-help">Only two things are needed: the download link and the app name. Paste the link first and the name and version fill in for you.</p>
+<form class="a-form" id="app-form" novalidate>
+<input type="hidden" id="app-id">
+<div class="a-two">
+<div class="field wide"><label for="f-download">Download link (HTTPS) *</label><input id="f-download" type="url" required placeholder="https://github.com/you/app/releases/download/v1.0/app.apk" autocomplete="off"><span class="hint" id="auto-note"></span></div>
+<div class="field"><label for="f-name">App name *</label><input id="f-name" maxlength="100" required></div>
+<div class="field"><label for="f-version">Version</label><input id="f-version" maxlength="40" placeholder="1.0"></div>
+<div class="field wide"><label for="f-category">Category</label><input id="f-category" maxlength="40" list="cat-list" placeholder="Pick one below or type your own" autocomplete="off"><datalist id="cat-list"></datalist><div class="pick" id="cat-pick" role="group" aria-label="Quick category choices"></div></div>
+<div class="field wide"><label for="f-desc">Description</label><textarea id="f-desc" maxlength="1000" placeholder="What does the app do? One or two sentences is enough."></textarea></div>
+</div>
+<details class="more" id="more"><summary>More options: icon, screenshots, visibility</summary>
+<div class="a-two">
+<div class="field wide"><label for="f-icon">App icon link (HTTPS)</label><input id="f-icon" type="url" placeholder="https://example.com/icon.png"></div>
+<div class="field wide"><label for="f-shots">Screenshots</label><textarea id="f-shots" placeholder="One HTTPS link per line"></textarea><span class="hint">Up to 8 links, one per line.</span></div>
+<label class="check wide"><input type="checkbox" id="f-published" checked> Published (visible to visitors)</label>
+</div>
+</details>
+<div class="row-actions mt16">
+<button class="btn btn-primary" type="submit" id="save">Add app</button>
+<button class="btn btn-ghost" type="button" id="cancel" hidden>Cancel editing</button>
+</div>
+<p class="msg" id="msg" role="status" aria-live="polite"></p>
+</form>
+</section>
+
 <section class="stats" aria-label="Summary">
 <div class="stat"><b id="s-total">-</b><span>Total apps</span></div>
 <div class="stat"><b id="s-pub">-</b><span>Published apps</span></div>
@@ -38,27 +65,7 @@
 
 <section class="a-panel" aria-labelledby="recent-title"><h2 id="recent-title">Recent apps</h2><div id="recent"><p class="hint">Loading…</p></div></section>
 
-<section class="a-panel" id="form-panel" aria-labelledby="form-title">
-<h2 id="form-title">Add an app</h2>
-<form class="a-form" id="app-form" novalidate>
-<input type="hidden" id="app-id">
-<div class="a-two">
-<div class="field"><label for="f-name">App name *</label><input id="f-name" maxlength="100" required></div>
-<div class="field"><label for="f-category">Category</label><input id="f-category" maxlength="40" list="cat-list" placeholder="Tools" autocomplete="off"><datalist id="cat-list"></datalist></div>
-<div class="field"><label for="f-version">Version</label><input id="f-version" maxlength="40" placeholder="1.0"></div>
-<div class="field"><label for="f-icon">App icon URL (HTTPS)</label><input id="f-icon" type="url" placeholder="https://example.com/icon.png"></div>
-<div class="field wide"><label for="f-download">Download URL (HTTPS) *</label><input id="f-download" type="url" required placeholder="https://github.com/you/app/releases/download/v1.0/app.apk"></div>
-<div class="field wide"><label for="f-desc">Description</label><textarea id="f-desc" maxlength="1000"></textarea></div>
-<div class="field wide"><label for="f-shots">Screenshots (optional)</label><textarea id="f-shots" placeholder="One HTTPS link per line"></textarea><span class="hint">Up to 8 links, one per line.</span></div>
-<label class="check wide"><input type="checkbox" id="f-published" checked> Published (visible to visitors)</label>
-</div>
-<div class="row-actions mt16">
-<button class="btn btn-primary" type="submit" id="save">Add app</button>
-<button class="btn btn-ghost" type="button" id="cancel" hidden>Cancel editing</button>
-</div>
-<p class="msg" id="msg" role="status" aria-live="polite"></p>
-</form>
-</section>
+
 
 <section class="a-panel" aria-labelledby="apps-title">
 <h2 id="apps-title">All apps</h2>

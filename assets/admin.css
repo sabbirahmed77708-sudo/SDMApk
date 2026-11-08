@@ -50,3 +50,13 @@
 .mt16 { margin-top: 16px; }
 .mb10 { margin-bottom: 10px; }
 .mb8 { margin-bottom: 8px; }
+
+/* Quick add */
+.more { margin-top: 16px; border: 1px solid var(--line); border-radius: 14px; padding: 0 16px; }
+.more summary { cursor: pointer; padding: 14px 0; font-weight: 600; }
+.more[open] summary { border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.more[open] { padding-bottom: 16px; }
+.pick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.pick button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 14px; font: 600 0.9rem var(--font-body); cursor: pointer; }
+.pick button:hover { border-color: var(--brand); }
+.pick button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
