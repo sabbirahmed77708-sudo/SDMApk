@@ -6,6 +6,7 @@
 
   var els = {
     heroForm: $("hero-search"), heroQ: $("q"), heroCount: $("hero-count"),
+    stage: $("hero-stage"), home: $("home-grid"),
     featuredSec: $("featured-section"), featured: $("featured"),
     catSec: $("categories-section"), cats: $("cat-grid"),
     list: $("apps"), status: $("status"),
@@ -65,6 +66,20 @@
     els.filterCat.innerHTML = '<option value="">All categories</option>' + cats.map(function (c) {
       return '<option value="' + SDM.esc(c.name) + '"' + (S.cat === c.name ? " selected" : "") + ">" + SDM.esc(c.name) + "</option>";
     }).join("");
+  }
+
+  // The phone in the hero shows up to nine real apps as a home screen.
+  function renderPhone() {
+    var newest = S.apps.slice().sort(function (a, b) {
+      return String(b.created_at).localeCompare(String(a.created_at)) || b.id - a.id;
+    }).slice(0, 9);
+    els.stage.hidden = newest.length === 0;
+    var html = newest.map(function (a) {
+      return '<li><a href="/app/?id=' + encodeURIComponent(a.id) + '">' + SDM.iconHTML(a) +
+        '<span class="label">' + SDM.esc(a.name) + "</span></a></li>";
+    });
+    while (html.length < 6) html.push('<li aria-hidden="true"><span class="ghost"></span></li>');
+    els.home.innerHTML = html.join("");
   }
 
   function renderFeatured() {
@@ -133,6 +148,7 @@
       els.list.removeAttribute("aria-busy");
       els.heroCount.textContent = S.apps.length ? S.apps.length + (S.apps.length === 1 ? " app is" : " apps are") + " available to download." : "";
       renderCategories();
+      renderPhone();
       renderFeatured();
       if (S.cat && !S.apps.some(function (a) { return (a.category || "Other") === S.cat; })) S.cat = "";
       sync();
