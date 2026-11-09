@@ -59,7 +59,8 @@
     return '<div class="list-row">' + SDM.iconHTML(a) +
       '<div class="info"><b>' + esc(a.name) + (hidden ? ' <span class="badge">Hidden</span>' : "") + "</b>" +
       "<small>" + esc(a.category || "Other") + (a.version ? " · v" + esc(String(a.version).replace(/^v/i, "")) : "") +
-      (a.created_at ? " · added " + esc(SDM.fmtDate(a.created_at)) : "") + "</small>" +
+      (a.created_at ? " · added " + esc(SDM.fmtDate(a.created_at)) : "") +
+      (a.downloads > 0 ? " · " + esc(SDM.fmtCount(a.downloads)) + (a.downloads === 1 ? " download" : " downloads") : "") + "</small>" +
       (withActions ? "<small>" + esc(host(a.download_url)) + "</small>" : "") + "</div>" +
       '<div class="row-actions">' +
       '<button class="btn btn-ghost btn-sm" type="button" data-act="edit" data-id="' + a.id + '">Edit</button>' +
@@ -76,6 +77,7 @@
     $("s-total").textContent = apps.length;
     $("s-pub").textContent = published;
     $("s-hidden").textContent = apps.length - published;
+    $("s-dl").textContent = SDM.fmtCount(apps.reduce(function (n, a) { return n + (a.downloads || 0); }, 0));
     $("s-cats").textContent = cats.length;
 
     var recent = apps.slice().sort(byNewest).slice(0, 5);

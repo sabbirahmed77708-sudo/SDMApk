@@ -28,6 +28,7 @@ export async function ensureColumns(env) {
   const wanted = [
     ["screenshots", "ALTER TABLE apps ADD COLUMN screenshots TEXT NOT NULL DEFAULT ''"],
     ["published", "ALTER TABLE apps ADD COLUMN published INTEGER NOT NULL DEFAULT 1"],
+    ["downloads", "ALTER TABLE apps ADD COLUMN downloads INTEGER NOT NULL DEFAULT 0"],
   ];
   let changed = false;
   for (const [name, sql] of wanted) {
@@ -39,7 +40,7 @@ export async function ensureColumns(env) {
       // Another request may have added it first; the re-read below settles it.
     }
   }
-  if (changed || !cols.has("screenshots") || !cols.has("published")) cols = await getColumns(env);
+  if (changed || wanted.some(([name]) => !cols.has(name))) cols = await getColumns(env);
   return cols;
 }
 
@@ -47,6 +48,7 @@ export function selectList(cols) {
   const list = [...BASE_COLUMNS];
   if (cols.has("screenshots")) list.push("screenshots");
   if (cols.has("published")) list.push("published");
+  if (cols.has("downloads")) list.push("downloads");
   return list.join(",");
 }
 
@@ -70,6 +72,7 @@ export function shapeApp(row) {
     icon_url: row.icon_url || "",
     screenshots,
     published: row.published === undefined ? true : Number(row.published) !== 0,
+    downloads: Math.max(0, Number(row.downloads) || 0),
     created_at: row.created_at,
   };
 }

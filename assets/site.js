@@ -78,7 +78,7 @@
       '<div class="card-id"><h3><a href="' + detailHref + '">' + SDM.esc(app.name) + "</a></h3>" +
       '<p class="card-sub">' + sub + "</p></div>" +
       (dl
-        ? '<a class="btn btn-primary btn-sm-dl" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow" aria-label="Download ' + SDM.esc(app.name) + '">Download</a>'
+        ? '<a class="btn btn-primary btn-sm-dl" data-dl="' + app.id + '" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow" aria-label="Download ' + SDM.esc(app.name) + '">Download</a>'
         : "") +
       "</div>" +
       (shots.length
@@ -89,6 +89,36 @@
       '<p class="card-desc">' + (app.description ? SDM.esc(app.description) : "No description yet.") + "</p></article>"
     );
   };
+
+  // 950 -> "950", 1234 -> "1.2K", 2500000 -> "2.5M"
+  SDM.fmtCount = function (n) {
+    n = Number(n) || 0;
+    if (n < 1000) return String(n);
+    if (n < 1000000) return (n / 1000).toFixed(n < 10000 ? 1 : 0).replace(/\.0$/, "") + "K";
+    return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+  };
+
+  // Count a download click once per app per day per browser.
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest ? e.target.closest("[data-dl]") : null;
+    if (!a) return;
+    var id = Number(a.getAttribute("data-dl"));
+    if (!id) return;
+    try {
+      var key = "sdmapk-dl-" + id;
+      var day = new Date().toISOString().slice(0, 10);
+      if (localStorage.getItem(key) === day) return;
+      localStorage.setItem(key, day);
+    } catch (err) { /* storage can be unavailable; still count */ }
+    try {
+      fetch("/api/download", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id: id }),
+        keepalive: true
+      }).catch(function () {});
+    } catch (err) { /* ignore */ }
+  });
 
   SDM.fmtDate = function (iso) {
     var d = new Date(iso);

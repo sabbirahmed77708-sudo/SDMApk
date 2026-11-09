@@ -234,9 +234,20 @@ p { margin: 0; }
 .pd-head .icon-tile, .pd-head .app-icon { width: 92px; height: 92px; border-radius: 24px; font-size: 2.5rem; }
 .detail h1 { font-size: clamp(1.7rem, 5vw, 2.6rem); font-weight: 700; overflow-wrap: anywhere; }
 .pd-sub { color: var(--brand-text); font-weight: 600; margin-top: 4px; }
-.pd-dl { min-width: 200px; }
+.pd-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.pd-dl { min-width: 180px; }
+.pd-share { gap: 8px; }
+.pd-share svg, .pd-dl svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.install { margin-top: 28px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); padding: 0 18px; }
+.install summary { cursor: pointer; padding: 16px 0; font-weight: 650; }
+.install[open] summary { border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.install[open] { padding-bottom: 6px; }
+.install-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 28px; }
+.install ol { margin: 0 0 12px; padding-left: 22px; }
+.install li { margin-bottom: 8px; }
+@media (max-width: 760px) { .install-cols { grid-template-columns: minmax(0, 1fr); } }
 .pd-stats { display: flex; margin: 26px 0 8px; padding: 14px 0; border-block: 1px solid var(--line); }
-.pd-stats div { flex: 1; text-align: center; padding: 0 8px; min-width: 0; }
+.pd-stats div { flex: 1 1 auto; text-align: center; padding: 0 8px; min-width: 0; }
 .pd-stats div + div { border-left: 1px solid var(--line); }
 .pd-stats b { display: block; font-size: 1.05rem; overflow-wrap: anywhere; }
 .pd-stats span { color: var(--muted); font-size: 0.88rem; }
@@ -249,7 +260,9 @@ p { margin: 0; }
 .block h2 { font-size: 1.3rem; margin-bottom: 10px; }
 @media (max-width: 640px) {
   .pd-head .icon-tile, .pd-head .app-icon { width: 72px; height: 72px; border-radius: 18px; font-size: 2rem; }
-  .pd-dl { width: 100%; }
+  .pd-actions { width: 100%; flex-wrap: nowrap; }
+  .pd-dl { flex: 1; min-width: 0; }
+  .pd-stats b { font-size: 0.98rem; overflow-wrap: normal; }
   .shots img { height: 240px; }
 }
 
