@@ -45,7 +45,7 @@
     "We could not load the apps. Check your connection and try again.": "অ্যাপ লোড করা গেল না। ইন্টারনেট দেখে আবার চেষ্টা করুন।",
     "Try again": "আবার চেষ্টা করুন",
     // cards + app page
-    "Download": "ডাউনলোড", "No description yet.": "এখনো কোনো বিবরণ নেই।",
+    "Download": "ডাউনলোড", "Details": "বিস্তারিত", "No description yet.": "এখনো কোনো বিবরণ নেই।",
     "Screenshots": "স্ক্রিনশট", "About this app": "অ্যাপ সম্পর্কে",
     "No description has been added yet.": "এখনো কোনো বিবরণ যোগ করা হয়নি।",
     "Share": "শেয়ার", "Link copied": "লিংক কপি হয়েছে", "Version": "ভার্সন", "Downloads": "ডাউনলোড", "Added": "যোগ হয়েছে",

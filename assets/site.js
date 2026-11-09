@@ -77,9 +77,11 @@
       '<div class="card-top">' + SDM.iconHTML(app) +
       '<div class="card-id"><h3><a href="' + detailHref + '">' + SDM.esc(app.name) + "</a></h3>" +
       '<p class="card-sub">' + sub + "</p></div>" +
+      '<div class="card-actions">' +
       (dl
         ? '<a class="btn btn-primary btn-sm-dl" data-dl="' + app.id + '" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow" aria-label="Download ' + SDM.esc(app.name) + '">Download</a>'
         : "") +
+      '<a class="btn btn-ghost btn-sm-dl card-details" href="' + detailHref + '">Details</a></div>' +
       "</div>" +
       (shots.length
         ? '<div class="card-shots">' + shots.map(function (u, i) {

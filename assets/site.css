@@ -325,3 +325,6 @@ p { margin: 0; }
 /* Language button and Bengali type */
 .lang-btn { width: auto; min-width: 42px; padding: 0 10px; font-weight: 700; font-size: 0.82rem; }
 html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { font-family: "Hind Siliguri", "Instrument Sans", system-ui, sans-serif; }
+
+.card-actions { flex: none; display: flex; flex-direction: column; gap: 6px; align-items: stretch; text-align: center; }
+.card-actions .btn-sm-dl { min-height: 36px; padding: 0 18px; }

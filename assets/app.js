@@ -53,6 +53,7 @@
       if (e.key === "ArrowLeft") go(index() - 1);
     });
   }
+  var BN = document.documentElement.lang === "bn";
   var id = new URLSearchParams(location.search).get("id") || "";
 
   function setMeta(sel, attr, value) {
@@ -110,17 +111,19 @@
         : "") +
       '<section class="block"><h2>About this app</h2><p class="prose">' + (a.description ? SDM.esc(a.description) : "No description has been added yet.") + "</p></section>" +
       '<section class="block" id="older" hidden><h2>Older versions</h2><p class="note">Need an earlier release? Older versions may not work on every phone.</p><ul class="vers" id="older-list"></ul></section>' +
-      '<details class="install"><summary>How to install this app<span lang="bn"> · ইনস্টল করার নিয়ম</span></summary>' +
-      '<div class="install-cols">' +
-      '<ol><li>Tap <b>Download</b> and wait until the file finishes downloading.</li>' +
-      '<li>Open the downloaded <b>.apk</b> file from the notification or your Downloads folder.</li>' +
-      '<li>If Android says installing from this source is blocked, tap <b>Settings</b>, turn on <b>Allow from this source</b>, then go back.</li>' +
-      '<li>Tap <b>Install</b>, then <b>Open</b>.</li></ol>' +
-      '<ol lang="bn"><li><b>Download</b> চাপুন এবং ফাইল নামা শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</li>' +
-      '<li>নোটিফিকেশন বা Downloads ফোল্ডার থেকে নামানো <b>.apk</b> ফাইলটা খুলুন।</li>' +
-      '<li>ফোন ইনস্টল আটকে দিলে <b>Settings</b> চাপুন, <b>Allow from this source</b> চালু করে ফিরে আসুন।</li>' +
-      '<li><b>Install</b> চাপুন, তারপর <b>Open</b>।</li></ol></div>' +
-      '<p class="note">If Play Protect shows a warning for an app you trust, tap More details, then Install anyway.</p></details>' +
+      (BN
+        ? '<details class="install"><summary>ইনস্টল করার নিয়ম</summary><div class="install-cols"><ol>' +
+          '<li><b>Download</b> চাপুন এবং ফাইল নামা শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</li>' +
+          '<li>নোটিফিকেশন বা Downloads ফোল্ডার থেকে নামানো <b>.apk</b> ফাইলটা খুলুন।</li>' +
+          '<li>ফোন ইনস্টল আটকে দিলে <b>Settings</b> চাপুন, <b>Allow from this source</b> চালু করে ফিরে আসুন।</li>' +
+          '<li><b>Install</b> চাপুন, তারপর <b>Open</b>।</li></ol></div>' +
+          '<p class="note">বিশ্বস্ত অ্যাপে Play Protect সতর্কতা দেখালে More details চাপুন, তারপর Install anyway চাপুন।</p></details>'
+        : '<details class="install"><summary>How to install this app</summary><div class="install-cols"><ol>' +
+          '<li>Tap <b>Download</b> and wait until the file finishes downloading.</li>' +
+          '<li>Open the downloaded <b>.apk</b> file from the notification or your Downloads folder.</li>' +
+          '<li>If Android says installing from this source is blocked, tap <b>Settings</b>, turn on <b>Allow from this source</b>, then go back.</li>' +
+          '<li>Tap <b>Install</b>, then <b>Open</b>.</li></ol></div>' +
+          '<p class="note">If Play Protect shows a warning for an app you trust, tap More details, then Install anyway.</p></details>') +
       '<p class="note">Only install apps from sources you trust.</p>';
     var shareBtn = root.querySelector("#share");
     if (shareBtn) {
