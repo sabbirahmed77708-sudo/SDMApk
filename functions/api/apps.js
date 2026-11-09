@@ -16,7 +16,14 @@ export async function onRequestGet({ request, env }) {
     const { results = [] } = await env.DB.prepare(
       `SELECT ${selectList(cols)} FROM apps${where} ORDER BY created_at DESC, id DESC LIMIT 500`
     ).all();
-    return reply({ apps: results.map(shapeApp) });
+    const admin = includeHidden || (await requireAdmin(request, env));
+    return reply({
+      apps: results.map((r) => {
+        const a = shapeApp(r);
+        if (!admin) delete a.downloads; // download counts are for the owner only
+        return a;
+      }),
+    });
   } catch {
     return reply({ error: "Could not load apps" }, 500);
   }

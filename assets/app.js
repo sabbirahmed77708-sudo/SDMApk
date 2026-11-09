@@ -90,7 +90,6 @@
     var stats = "";
     if (a.version) stats += '<div><b>' + SDM.esc(String(a.version).replace(/^v/i, "")) + "</b><span>Version</span></div>";
     stats += '<div><b>' + SDM.esc(a.category || "Other") + "</b><span>Category</span></div>";
-    if (a.downloads > 0) stats += '<div><b>' + SDM.esc(SDM.fmtCount(a.downloads)) + "</b><span>Downloads</span></div>";
     if (a.created_at) stats += '<div><b>' + SDM.esc(SDM.fmtDate(a.created_at)) + "</b><span>Added</span></div>";
 
     root.innerHTML =

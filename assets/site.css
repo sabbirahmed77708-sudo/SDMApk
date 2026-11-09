@@ -328,3 +328,8 @@ html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { 
 
 .card-actions { flex: none; display: flex; flex-direction: column; gap: 6px; align-items: stretch; text-align: center; }
 .card-actions .btn-sm-dl { min-height: 36px; padding: 0 18px; }
+
+.card-btns { flex: none; display: grid; gap: 6px; justify-items: stretch; }
+.card-btns .btn-sm-dl { min-height: 36px; padding: 0 18px; text-align: center; }
+.card-more { font-size: 0.9rem; }
+.install-cols { grid-template-columns: minmax(0, 1fr); }

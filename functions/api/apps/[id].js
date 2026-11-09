@@ -14,9 +14,9 @@ export async function onRequestGet({ request, env, params }) {
       .first();
     if (!row) return reply({ error: "App not found" }, 404);
     const app = shapeApp(row);
-    if (!app.published && !(await requireAdmin(request, env))) {
-      return reply({ error: "App not found" }, 404);
-    }
+    const admin = await requireAdmin(request, env);
+    if (!app.published && !admin) return reply({ error: "App not found" }, 404);
+    if (!admin) delete app.downloads; // download counts are for the owner only
     return reply({ app });
   } catch {
     return reply({ error: "Could not load the app" }, 500);
