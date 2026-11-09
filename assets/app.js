@@ -109,6 +109,7 @@
           }).join("") + "</div></section>"
         : "") +
       '<section class="block"><h2>About this app</h2><p class="prose">' + (a.description ? SDM.esc(a.description) : "No description has been added yet.") + "</p></section>" +
+      '<section class="block" id="older" hidden><h2>Older versions</h2><p class="note">Need an earlier release? Older versions may not work on every phone.</p><ul class="vers" id="older-list"></ul></section>' +
       '<details class="install"><summary>How to install this app<span lang="bn"> · ইনস্টল করার নিয়ম</span></summary>' +
       '<div class="install-cols">' +
       '<ol><li>Tap <b>Download</b> and wait until the file finishes downloading.</li>' +
@@ -135,6 +136,18 @@
       });
     }
     if (shots.length) setupViewer(shots, a.name);
+    SDM.api("/api/apps/" + a.id + "/versions").then(function (v) {
+      var rows = (v.versions || []).map(function (x) {
+        var u = SDM.safeUrl(x.download_url);
+        if (!u) return "";
+        return '<li><div><b>' + (x.version ? "Version " + SDM.esc(String(x.version).replace(/^v/i, "")) : "Earlier version") + "</b>" +
+          (x.created_at ? "<small>Replaced " + SDM.esc(SDM.fmtDate(x.created_at)) + "</small>" : "") + "</div>" +
+          '<a class="btn btn-ghost btn-sm" href="' + SDM.esc(u) + '" target="_blank" rel="noopener noreferrer nofollow">Download</a></li>';
+      }).join("");
+      if (!rows) return;
+      root.querySelector("#older-list").innerHTML = rows;
+      root.querySelector("#older").hidden = false;
+    }).catch(function () {});
   }).catch(function (err) {
     if (err.status === 404) notFound("App not found", "This app was removed or is not published. Browse the list to find something else.");
     else notFound("App did not load", "We could not load this app. Check your connection and refresh the page.");

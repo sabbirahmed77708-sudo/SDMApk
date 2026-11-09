@@ -1,4 +1,5 @@
 import { reply, isSameOrigin, readJson, requireAdmin } from "../_auth.js";
+import { ensureTables } from "../_db.js";
 import { getColumns, ensureColumns, selectList, shapeApp, normalizeApp, parseId } from "../_apps.js";
 
 // GET /api/apps/:id — public details for one published app (admins also see hidden ones).
@@ -38,6 +39,25 @@ export async function onRequestPut({ request, env, params }) {
     const checked = normalizeApp(body.data, cols);
     if (checked.error) return reply({ error: checked.error }, checked.status || 400);
 
+    // When the download link changes, keep the old version in the "older versions" list.
+    const old = await env.DB.prepare("SELECT version, download_url FROM apps WHERE id = ?").bind(id).first();
+    if (!old) return reply({ error: "App not found" }, 404);
+    if (old.download_url && checked.value.download_url && old.download_url !== checked.value.download_url) {
+      try {
+        await ensureTables(env);
+        const dup = await env.DB.prepare("SELECT id FROM app_versions WHERE app_id = ? AND download_url = ?")
+          .bind(id, old.download_url)
+          .first();
+        if (!dup) {
+          await env.DB.prepare("INSERT INTO app_versions (app_id, version, download_url) VALUES (?, ?, ?)")
+            .bind(id, old.version || "", old.download_url)
+            .run();
+        }
+      } catch {
+        // Archiving is a bonus; never block the update because of it.
+      }
+    }
+
     const names = Object.keys(checked.value);
     const result = await env.DB.prepare(
       `UPDATE apps SET ${names.map((n) => n + " = ?").join(", ")} WHERE id = ?`
@@ -62,6 +82,9 @@ export async function onRequestDelete({ request, env, params }) {
   try {
     const result = await env.DB.prepare("DELETE FROM apps WHERE id = ?").bind(id).run();
     if (!result.meta.changes) return reply({ error: "App not found" }, 404);
+    try {
+      await env.DB.prepare("DELETE FROM app_versions WHERE app_id = ?").bind(id).run();
+    } catch {}
     return reply({ ok: true });
   } catch {
     return reply({ error: "Could not delete the app" }, 500);

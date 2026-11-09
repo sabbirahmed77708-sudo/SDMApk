@@ -54,6 +54,11 @@
 </div>
 <p class="msg" id="msg" role="status" aria-live="polite"></p>
 </form>
+<div id="old-versions" hidden>
+<h3 class="sub-h">Older versions of this app</h3>
+<p class="hint mb8">When you change the download link, the previous version is kept here and shown to visitors under “Older versions”. Remove any you do not want to offer.</p>
+<div id="old-list"></div>
+</div>
 </section>
 
 <section class="stats" aria-label="Summary">
@@ -78,6 +83,41 @@
 <h2 id="cats-title">Categories</h2>
 <p class="hint mb8">Categories come from your apps. Rename one to update every app in it. Removing one moves its apps to Other.</p>
 <div id="cats"><p class="hint">Loading…</p></div>
+</section>
+
+<section class="a-panel" aria-labelledby="contact-title">
+<h2 id="contact-title">Contact details</h2>
+<p class="hint mb10">Shown on the About page. Fill in only what you want to share; empty fields are not shown.</p>
+<form class="a-form" id="contact-form" novalidate>
+<div class="a-two">
+<div class="field"><label for="c-email">Email</label><input id="c-email" type="email" maxlength="120" placeholder="you@example.com" autocomplete="off"></div>
+<div class="field"><label for="c-telegram">Telegram or social link (HTTPS)</label><input id="c-telegram" type="url" maxlength="200" placeholder="https://t.me/yourname" autocomplete="off"></div>
+<div class="field"><label for="c-website">Other link (HTTPS)</label><input id="c-website" type="url" maxlength="200" placeholder="https://facebook.com/yourpage" autocomplete="off"></div>
+<div class="field"><label for="c-note">Short note</label><input id="c-note" maxlength="300" placeholder="For example: I reply within 2 days"></div>
+</div>
+<div class="row-actions mt16"><button class="btn btn-primary" type="submit" id="c-save">Save contact details</button></div>
+<p class="msg" id="c-msg" role="status" aria-live="polite"></p>
+</form>
+</section>
+
+<section class="a-panel" aria-labelledby="pw-title">
+<h2 id="pw-title">Change password</h2>
+<p class="hint mb10">Use at least 10 characters. After you change it here, the new password is used for sign-in.</p>
+<form class="a-form" id="pw-form" novalidate>
+<div class="a-two">
+<div class="field"><label for="p-cur">Current password</label><input id="p-cur" type="password" autocomplete="current-password"></div>
+<div class="field"><label for="p-new">New password</label><input id="p-new" type="password" minlength="10" maxlength="200" autocomplete="new-password"></div>
+<div class="field"><label for="p-new2">New password again</label><input id="p-new2" type="password" maxlength="200" autocomplete="new-password"></div>
+</div>
+<div class="row-actions mt16"><button class="btn btn-primary" type="submit" id="p-save">Change password</button></div>
+<p class="msg" id="p-msg" role="status" aria-live="polite"></p>
+</form>
+</section>
+
+<section class="a-panel" aria-labelledby="bk-title">
+<h2 id="bk-title">Backup</h2>
+<p class="hint mb10">Download all your apps, older versions and contact details as one file. Keep it somewhere safe.</p>
+<a class="btn btn-ghost" id="backup" href="/api/backup" download>Download backup</a>
 </section>
 </main>
 <script src="/assets/site.js" defer></script>

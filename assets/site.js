@@ -123,7 +123,7 @@
   SDM.fmtDate = function (iso) {
     var d = new Date(iso);
     if (isNaN(d)) return "";
-    return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    return d.toLocaleDateString(document.documentElement.lang === "bn" ? "bn-BD" : undefined, { year: "numeric", month: "short", day: "numeric" });
   };
 
   var CAT_ICONS = {

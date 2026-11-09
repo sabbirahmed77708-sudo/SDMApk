@@ -312,3 +312,16 @@ p { margin: 0; }
 .hero-chips button { border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.08); color: #fff; border-radius: 999px; padding: 7px 14px; font: 600 0.9rem var(--font-body); cursor: pointer; }
 .hero-chips button:hover { background: rgba(255, 255, 255, 0.18); }
 .hero-chips:empty { display: none; }
+
+/* Older versions */
+.vers { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.vers li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.vers small { display: block; color: var(--muted); font-size: 0.82rem; }
+
+/* Contact list */
+.contact-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.contact-list li { overflow-wrap: anywhere; }
+
+/* Language button and Bengali type */
+.lang-btn { width: auto; min-width: 42px; padding: 0 10px; font-weight: 700; font-size: 0.82rem; }
+html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { font-family: "Hind Siliguri", "Instrument Sans", system-ui, sans-serif; }

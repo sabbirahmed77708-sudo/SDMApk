@@ -191,7 +191,30 @@
   $("f-download").addEventListener("input", autofill);
   $("f-download").addEventListener("change", autofill);
 
+  function showVersions(id) {
+    var box = $("old-versions");
+    if (!id) { box.hidden = true; return; }
+    api("/api/apps/" + encodeURIComponent(id) + "/versions").then(function (d) {
+      var list = d.versions || [];
+      if (String($("app-id").value) !== String(id)) return;
+      box.hidden = false;
+      $("old-list").innerHTML = list.length ? list.map(function (v) {
+        return '<div class="list-row"><div class="info"><b>' + (v.version ? "Version " + esc(String(v.version).replace(/^v/i, "")) : "Earlier version") + "</b>" +
+          "<small>" + esc(host(v.download_url)) + (v.created_at ? " · replaced " + esc(SDM.fmtDate(v.created_at)) : "") + "</small></div>" +
+          '<div class="row-actions"><button class="btn btn-danger btn-sm" type="button" data-vdel="' + v.id + '" data-app="' + id + '">Remove</button></div></div>';
+      }).join("") : '<p class="hint">None yet.</p>';
+    }).catch(function () {});
+  }
+  $("old-list").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-vdel]");
+    if (!b || !window.confirm("Remove this older version from the site?")) return;
+    api("/api/apps/" + b.dataset.app + "/versions?v=" + encodeURIComponent(b.dataset.vdel), { method: "DELETE" })
+      .then(function () { showVersions(b.dataset.app); })
+      .catch(function (err) { say(err.message, "err"); });
+  });
+
   function resetForm() {
+    showVersions("");
     $("app-form").reset();
     autoName = ""; autoVersion = "";
     $("auto-note").textContent = "";
@@ -269,6 +292,7 @@
       $("save").textContent = "Save changes";
       $("cancel").hidden = false;
       say("");
+      showVersions(a.id);
       $("form-panel").scrollIntoView();
       $("f-name").focus();
     } else if (b.dataset.act === "toggle") {
@@ -313,9 +337,51 @@
     }
   });
 
+  function note(id, text, kind) {
+    var m = $(id);
+    m.textContent = text;
+    m.className = "msg" + (kind ? " " + kind : "");
+  }
+
+  // Contact details
+  function loadContact() {
+    return fetch("/api/settings", { credentials: "same-origin" }).then(function (r) { return r.json(); }).then(function (d) {
+      var c = d.contact || {};
+      $("c-email").value = c.contact_email || "";
+      $("c-telegram").value = c.contact_telegram || "";
+      $("c-website").value = c.contact_website || "";
+      $("c-note").value = c.contact_note || "";
+    }).catch(function () {});
+  }
+  $("contact-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    $("c-save").disabled = true;
+    note("c-msg", "Saving…");
+    api("/api/settings", { method: "PUT", body: {
+      contact_email: $("c-email").value, contact_telegram: $("c-telegram").value,
+      contact_website: $("c-website").value, contact_note: $("c-note").value
+    } }).then(function () { note("c-msg", "Saved. The About page now shows these details.", "ok"); })
+      .catch(function (err) { note("c-msg", err.message, "err"); })
+      .then(function () { $("c-save").disabled = false; });
+  });
+
+  // Password
+  $("pw-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var n = $("p-new").value;
+    if (n.length < 10) { note("p-msg", "The new password must be at least 10 characters.", "err"); return; }
+    if (n !== $("p-new2").value) { note("p-msg", "The two new passwords are not the same.", "err"); return; }
+    $("p-save").disabled = true;
+    note("p-msg", "Saving…");
+    api("/api/password", { method: "POST", body: { current: $("p-cur").value, next: n } })
+      .then(function () { $("pw-form").reset(); note("p-msg", "Password changed. Use the new one next time you sign in.", "ok"); })
+      .catch(function (err) { note("p-msg", err.message, "err"); })
+      .then(function () { $("p-save").disabled = false; });
+  });
+
   $("logout").addEventListener("click", function () {
     api("/api/logout", { method: "POST" }).catch(function () {}).then(function () { location.href = "/admin/login.html"; });
   });
 
-  api("/api/me").then(load).catch(function () {});
+  api("/api/me").then(function () { loadContact(); return load(); }).catch(function () {});
 })();
