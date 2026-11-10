@@ -1,21 +1,28 @@
 /* SdmApk public styles. Light by default, dark via system setting or the theme button.
-   Palette: midnight navy with an amber-to-coral glow, matching the SDM app icon. */
+   Palette: soft indigo canvas, one indigo accent, pastel app tiles. */
 :root {
-  --bg: #f6f7fb;
+  --bg: #f5f4ff;
   --surface: #ffffff;
-  --surface-2: #eceff8;
-  --ink: #0b1020;
-  --muted: #576080;
-  --line: #e1e5f1;
-  --brand: #e8456b;
-  --brand-hover: #d23559;
-  --brand-ink: #0b1020;
-  --brand-soft: #fff0e8;
-  --brand-text: #c3294f;
-  --glow: linear-gradient(135deg, #ffc15e 0%, #ff4f78 100%);
-  --hero-bg: #0b1020;
+  --surface-2: #ecebfb;
+  --ink: #14123a;
+  --muted: #5d5a86;
+  --line: #e2e0f5;
+  --brand: #4f46e5;
+  --brand-hover: #4338ca;
+  --brand-ink: #ffffff;
+  --brand-soft: #eceafd;
+  --brand-text: #4338ca;
+  --glow: linear-gradient(135deg, #6d5efc 0%, #4f46e5 100%);
+  --hero-bg: radial-gradient(520px 320px at 90% 10%, #e3defe, transparent 70%), radial-gradient(420px 260px at 0% 100%, #ffe9d9, transparent 70%), #f5f4ff;
+  --hero-ink: #14123a;
+  --hero-muted: #5d5a86;
+  --hero-tag-bg: #e6e3fd;
+  --hero-tag-ink: #4338ca;
+  --chip-bg: #ffffff;
+  --chip-line: #dedbf5;
+  --t1: #ffe3d6; --t2: #dff3ff; --t3: #e6e0ff; --t4: #dcf7e6; --t5: #fff0c2; --t6: #ffdff0;
   --danger: #b3263e;
-  --shadow: 0 1px 2px rgba(11, 16, 32, 0.05), 0 10px 26px -16px rgba(11, 16, 32, 0.3);
+  --shadow: 0 10px 30px -18px rgba(79, 70, 229, 0.45);
   --radius: 24px;
   --radius-sm: 12px;
   --font-body: "Instrument Sans", "Hind Siliguri", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -24,36 +31,54 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #080c18;
-    --surface: #111933;
-    --surface-2: #18224a;
-    --ink: #eef1ff;
-    --muted: #9aa4c7;
-    --line: #243059;
-    --brand: #ff6b8a;
-    --brand-hover: #ff8aa2;
-    --brand-soft: #2a1d3a;
-    --brand-text: #ffc15e;
-    --hero-bg: #0b1020;
+    --bg: #0e0d22;
+    --surface: #17163a;
+    --surface-2: #201f4d;
+    --ink: #f1f0ff;
+    --muted: #a09ec9;
+    --line: #2c2a5e;
+    --brand: #7c78ff;
+    --brand-hover: #9b97ff;
+    --brand-ink: #0e0d22;
+    --brand-soft: #23215a;
+    --brand-text: #a9a6ff;
+    --glow: linear-gradient(135deg, #8b86ff 0%, #6b64f5 100%);
+    --hero-bg: radial-gradient(520px 320px at 90% 10%, #2b2780, transparent 70%), radial-gradient(420px 260px at 0% 100%, #4a2552, transparent 70%), #0e0d22;
+    --hero-ink: #f1f0ff;
+    --hero-muted: #a09ec9;
+    --hero-tag-bg: #23215a;
+    --hero-tag-ink: #c9c6ff;
+    --chip-bg: #17163a;
+    --chip-line: #2c2a5e;
+    --t1: #3a2a46; --t2: #1f3350; --t3: #2c2a63; --t4: #1d3f3a; --t5: #463a1c; --t6: #47233f;
     --danger: #ff8fa3;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px -14px rgba(0, 0, 0, 0.7);
+    --shadow: none;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #080c18;
-  --surface: #111933;
-  --surface-2: #18224a;
-  --ink: #eef1ff;
-  --muted: #9aa4c7;
-  --line: #243059;
-  --brand: #ff6b8a;
-  --brand-hover: #ff8aa2;
-  --brand-soft: #2a1d3a;
-  --brand-text: #ffc15e;
-  --hero-bg: #0b1020;
+  --bg: #0e0d22;
+  --surface: #17163a;
+  --surface-2: #201f4d;
+  --ink: #f1f0ff;
+  --muted: #a09ec9;
+  --line: #2c2a5e;
+  --brand: #7c78ff;
+  --brand-hover: #9b97ff;
+  --brand-ink: #0e0d22;
+  --brand-soft: #23215a;
+  --brand-text: #a9a6ff;
+  --glow: linear-gradient(135deg, #8b86ff 0%, #6b64f5 100%);
+  --hero-bg: radial-gradient(520px 320px at 90% 10%, #2b2780, transparent 70%), radial-gradient(420px 260px at 0% 100%, #4a2552, transparent 70%), #0e0d22;
+  --hero-ink: #f1f0ff;
+  --hero-muted: #a09ec9;
+  --hero-tag-bg: #23215a;
+  --hero-tag-ink: #c9c6ff;
+  --chip-bg: #17163a;
+  --chip-line: #2c2a5e;
+  --t1: #3a2a46; --t2: #1f3350; --t3: #2c2a63; --t4: #1d3f3a; --t5: #463a1c; --t6: #47233f;
   --danger: #ff8fa3;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px -14px rgba(0, 0, 0, 0.7);
+  --shadow: none;
   color-scheme: dark;
 }
 
@@ -115,32 +140,28 @@ p { margin: 0; }
 .btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .btn-lg { min-height: 52px; padding: 0 26px; font-size: 1.02rem; }
 
-/* Hero: midnight field, a glow disc, and a phone showing the real apps */
-.hero { position: relative; background: var(--hero-bg); color: #fff; overflow: hidden; }
+/* Hero: soft canvas with the newest real apps as tiles */
+.hero { position: relative; background: var(--hero-bg); color: var(--hero-ink); overflow: hidden; }
 .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 24px; align-items: center; }
 .hero-text { padding: 72px 0 64px; min-width: 0; }
-.hero-tag { color: #ffc15e; font-weight: 600; margin-bottom: 16px; }
+.hero-tag { display: inline-block; padding: 5px 12px; border-radius: 999px; background: var(--hero-tag-bg); color: var(--hero-tag-ink); font-weight: 600; font-size: 0.85rem; margin-bottom: 16px; }
 .hero h1 { font-size: clamp(2.5rem, 6.4vw, 4.5rem); font-weight: 700; max-width: 12ch; letter-spacing: -0.035em; line-height: 1.04; }
-.hero-copy { max-width: 50ch; margin-top: 18px; color: #c9d0ea; font-size: 1.08rem; }
-.search-form { display: flex; gap: 8px; margin-top: 30px; max-width: 560px; padding: 6px; background: #fff; border: 2px solid transparent; border-radius: 18px; box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.6); }
+.hero-copy { max-width: 50ch; margin-top: 18px; color: var(--hero-muted); font-size: 1.08rem; }
+.search-form { display: flex; gap: 8px; margin-top: 30px; max-width: 560px; padding: 6px; background: #fff; border: 2px solid transparent; border-radius: 18px; border-color: var(--chip-line); box-shadow: 0 14px 34px -18px rgba(79, 70, 229, 0.5); }
 .search-form:focus-within { border-color: #ff6b8a; }
 .search-form input { flex: 1; min-width: 0; border: 0; background: transparent; color: #0b1020; font: 500 1.05rem var(--font-body); padding: 0 14px; outline: none; }
 .search-form input::placeholder { color: #6b7391; }
 .search-form .btn { min-height: 48px; border-radius: 13px; }
-.hero-count { margin-top: 14px; color: #9aa4c7; font-size: 0.95rem; min-height: 1.5em; }
-.hero :focus-visible { outline-color: #fff; }
+.hero-count { margin-top: 14px; color: var(--hero-muted); font-size: 0.95rem; min-height: 1.5em; }
+.hero :focus-visible { outline-color: var(--brand); }
 
 .hero-stage { position: relative; align-self: stretch; min-height: 460px; overflow: hidden; }
 .hero-stage[hidden] { display: none; }
-.disc { position: absolute; width: 380px; height: 380px; border-radius: 50%; background: var(--glow); left: 50%; top: 38px; transform: translateX(-46%); }
-.phone { position: absolute; left: 50%; top: 56px; width: 270px; height: 560px; margin-left: -135px; padding: 11px; background: #1f2a52; border-radius: 40px; box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.7); transform: rotate(-3.5deg); transform-origin: 50% 100%; }
-.screen { height: 100%; border-radius: 30px; background: #f6f7fb; color: #0b1020; padding: 14px 16px; overflow: hidden; }
-.screen-bar { display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 700; color: #576080; padding: 0 4px 18px; }
-.home { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 8px; list-style: none; margin: 0; padding: 0; }
-.home a { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: #0b1020; font-size: 0.72rem; font-weight: 600; text-align: center; }
-.home .icon-tile, .home .app-icon { width: 54px; height: 54px; border-radius: 15px; font-size: 1.4rem; }
+.home { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; list-style: none; margin: 0; padding: 8px 2px 0; }
+.home a { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: var(--ink); font-size: 0.8rem; font-weight: 600; text-align: center; }
+.home .icon-tile, .home .app-icon { width: 60px; height: 60px; border-radius: 18px; font-size: 1.5rem; box-shadow: 0 8px 18px -8px rgba(20, 20, 60, 0.45); }
 .home span.label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.home .ghost { width: 54px; height: 54px; border-radius: 15px; border: 2px dashed #cdd3e6; }
+.home .ghost { width: 60px; height: 60px; border-radius: 18px; border: 2px dashed var(--line); }
 @media (prefers-reduced-motion: no-preference) {
   .home li { animation: pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
   .home li:nth-child(1) { animation-delay: 0.15s; }
@@ -158,9 +179,7 @@ p { margin: 0; }
   .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .hero-text { padding: 48px 0 28px; }
   .hero-stage { min-height: 360px; }
-  .disc { width: 300px; height: 300px; top: 20px; }
-  .phone { top: 36px; width: 240px; height: 520px; margin-left: -120px; }
-  .home .icon-tile, .home .app-icon, .home .ghost { width: 48px; height: 48px; border-radius: 13px; }
+  .home .icon-tile, .home .app-icon, .home .ghost { width: 52px; height: 52px; border-radius: 15px; }
 }
 
 /* Sections */
@@ -309,8 +328,8 @@ p { margin: 0; }
 
 /* Quick category chips in the hero */
 .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-.hero-chips button { border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.08); color: #fff; border-radius: 999px; padding: 7px 14px; font: 600 0.9rem var(--font-body); cursor: pointer; }
-.hero-chips button:hover { background: rgba(255, 255, 255, 0.18); }
+.hero-chips button { border: 1px solid var(--chip-line); background: var(--chip-bg); color: var(--ink); border-radius: 999px; padding: 7px 14px; font: 600 0.9rem var(--font-body); cursor: pointer; }
+.hero-chips button:hover { background: var(--surface-2); }
 .hero-chips:empty { display: none; }
 
 /* Older versions */
@@ -333,3 +352,13 @@ html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { 
 .card-btns .btn-sm-dl { min-height: 36px; padding: 0 18px; text-align: center; }
 .card-more { font-size: 0.9rem; }
 .install-cols { grid-template-columns: minmax(0, 1fr); }
+
+/* Hero tiles: the newest apps as soft coloured tiles */
+.hero-stage { min-height: 330px; display: flex; align-items: center; }
+.hero-stage[hidden] { display: none; }
+.hero-stage .home { width: 100%; }
+.home li { align-self: start; padding: 16px 8px 12px; border-radius: 24px; transition: transform 0.25s; }
+.home li:hover { transform: translateY(-4px); }
+.home li:nth-child(3n+2) { margin-top: 26px; }
+.home li:nth-child(6n+1) { background: var(--t1); } .home li:nth-child(6n+2) { background: var(--t2); } .home li:nth-child(6n+3) { background: var(--t3); }
+.home li:nth-child(6n+4) { background: var(--t4); } .home li:nth-child(6n+5) { background: var(--t5); } .home li:nth-child(6n) { background: var(--t6); }

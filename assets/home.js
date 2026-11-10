@@ -71,7 +71,7 @@
     }).join("");
   }
 
-  // The phone in the hero shows up to nine real apps as a home screen.
+  // The hero shows up to nine of the newest apps as tiles.
   function renderPhone() {
     var newest = S.apps.slice().sort(function (a, b) {
       return String(b.created_at).localeCompare(String(a.created_at)) || b.id - a.id;
