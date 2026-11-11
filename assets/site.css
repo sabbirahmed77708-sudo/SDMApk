@@ -362,3 +362,17 @@ html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { 
 .home li:nth-child(3n+2) { margin-top: 26px; }
 .home li:nth-child(6n+1) { background: var(--t1); } .home li:nth-child(6n+2) { background: var(--t2); } .home li:nth-child(6n+3) { background: var(--t3); }
 .home li:nth-child(6n+4) { background: var(--t4); } .home li:nth-child(6n+5) { background: var(--t5); } .home li:nth-child(6n) { background: var(--t6); }
+
+/* Desktop: wider app page and larger hero tiles */
+@media (min-width: 960px) {
+  .detail { max-width: none; }
+  .pd-cols { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 0 40px; align-items: start; }
+  .pd-side { position: sticky; top: 88px; }
+  .pd-side .install { margin-top: 28px; }
+  .shots img { height: 360px; }
+  .home { gap: 18px; }
+  .home li { padding: 20px 10px 14px; }
+  .home .icon-tile, .home .app-icon { width: 72px; height: 72px; border-radius: 21px; font-size: 1.8rem; }
+  .home .ghost { width: 72px; height: 72px; border-radius: 21px; }
+  .hero-stage { min-height: 400px; }
+}

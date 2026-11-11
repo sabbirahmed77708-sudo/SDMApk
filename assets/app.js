@@ -102,6 +102,7 @@
       '<button type="button" class="btn btn-ghost btn-lg pd-share" id="share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 0L8 7m4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><span>Share</span></button>' +
       "</div></div>" +
       '<div class="pd-stats">' + stats + "</div>" +
+      '<div class="pd-cols"><div class="pd-main">' +
       (shots.length
         ? '<section class="block"><h2>Screenshots</h2><div class="shots" tabindex="0" role="group" aria-label="Screenshots of ' + SDM.esc(a.name) + '">' +
           shots.map(function (u, i) {
@@ -110,6 +111,7 @@
         : "") +
       '<section class="block"><h2>About this app</h2><p class="prose">' + (a.description ? SDM.esc(a.description) : "No description has been added yet.") + "</p></section>" +
       '<section class="block" id="older" hidden><h2>Older versions</h2><p class="note">Need an earlier release? Older versions may not work on every phone.</p><ul class="vers" id="older-list"></ul></section>' +
+      '</div><aside class="pd-side">' +
       (BN
         ? '<details class="install"><summary>ইনস্টল করার নিয়ম</summary><div class="install-cols"><ol>' +
           '<li><b>Download</b> চাপুন এবং ফাইল নামা শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</li>' +
@@ -123,7 +125,7 @@
           '<li>If Android says installing from this source is blocked, tap <b>Settings</b>, turn on <b>Allow from this source</b>, then go back.</li>' +
           '<li>Tap <b>Install</b>, then <b>Open</b>.</li></ol></div>' +
           '<p class="note">If Play Protect shows a warning for an app you trust, tap More details, then Install anyway.</p></details>') +
-      '<p class="note">Only install apps from sources you trust.</p>';
+      '<p class="note">Only install apps from sources you trust.</p></aside></div>';
     var shareBtn = root.querySelector("#share");
     if (shareBtn) {
       shareBtn.addEventListener("click", function () {
