@@ -155,7 +155,7 @@ p { margin: 0; }
 .hero-count { margin-top: 14px; color: var(--hero-muted); font-size: 0.95rem; min-height: 1.5em; }
 .hero :focus-visible { outline-color: var(--brand); }
 
-.hero-stage { position: relative; align-self: stretch; min-height: 460px; overflow: hidden; }
+.hero-stage { position: relative; align-self: stretch; overflow: hidden; }
 .hero-stage[hidden] { display: none; }
 .home { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; list-style: none; margin: 0; padding: 8px 2px 0; }
 .home a { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: var(--ink); font-size: 0.8rem; font-weight: 600; text-align: center; }
@@ -178,7 +178,6 @@ p { margin: 0; }
 @media (max-width: 860px) {
   .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .hero-text { padding: 48px 0 28px; }
-  .hero-stage { min-height: 360px; }
   .home .icon-tile, .home .app-icon, .home .ghost { width: 52px; height: 52px; border-radius: 15px; }
 }
 
@@ -354,7 +353,7 @@ html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { 
 .install-cols { grid-template-columns: minmax(0, 1fr); }
 
 /* Hero tiles: the newest apps as soft coloured tiles */
-.hero-stage { min-height: 330px; display: flex; align-items: center; }
+.hero-stage { display: flex; align-items: center; }
 .hero-stage[hidden] { display: none; }
 .hero-stage .home { width: 100%; }
 .home li { align-self: start; padding: 16px 8px 12px; border-radius: 24px; transition: transform 0.25s; }
@@ -374,7 +373,6 @@ html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { 
   .home li { padding: 20px 10px 14px; }
   .home .icon-tile, .home .app-icon { width: 72px; height: 72px; border-radius: 21px; font-size: 1.8rem; }
   .home .ghost { width: 72px; height: 72px; border-radius: 21px; }
-  .hero-stage { min-height: 400px; }
 }
 
 /* Motion (skipped for visitors who prefer reduced motion) */
@@ -407,3 +405,32 @@ html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { 
 }
 .site-header { transition: box-shadow 0.25s; }
 .site-header.scrolled { box-shadow: 0 8px 24px -18px rgba(20, 18, 58, 0.5); }
+
+/* Few apps: no empty placeholders */
+.home.few { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.home.few li:nth-child(n) { margin-top: 0; }
+
+/* Spotlight: a single app shown as one proper card */
+.home.spot { display: block; padding: 0; }
+.spot-card { position: relative; padding: 22px; border-radius: 28px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); isolation: isolate; overflow: hidden; }
+.spot-card::before { content: ""; position: absolute; inset: -40% -20% auto auto; width: 70%; aspect-ratio: 1; border-radius: 50%; background: var(--glow); opacity: 0.16; filter: blur(40px); z-index: -1; }
+.home .spot-head { flex-direction: row; align-items: center; gap: 16px; text-align: left; }
+.spot-icon { flex: none; display: block; }
+.home .spot-icon .icon-tile, .home .spot-icon .app-icon { width: 84px; height: 84px; border-radius: 24px; font-size: 2.2rem; }
+.spot-id { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.spot-name { font: 700 1.5rem/1.15 var(--font-display); overflow-wrap: anywhere; }
+.spot-meta { color: var(--brand-text); font-weight: 600; font-size: 0.95rem; }
+.spot-desc { margin: 14px 0 0; color: var(--muted); font-size: 0.97rem; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.spot-shots { display: flex; gap: 10px; margin-top: 16px; }
+.spot-shots img { flex: 1 1 0; min-width: 0; max-height: 190px; object-fit: cover; object-position: top; border-radius: 14px; border: 1px solid var(--line); background: var(--surface-2); }
+.spot-actions { display: flex; gap: 10px; margin-top: 18px; }
+.spot-actions .btn { flex: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .spot-card { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
+  .home .spot-head { animation: none; }
+  .spot-icon { animation: bob 5s ease-in-out infinite; }
+  .spot-shots img { animation: bob 6s ease-in-out infinite; }
+  .spot-shots img:nth-child(2) { animation-delay: -2s; } .spot-shots img:nth-child(3) { animation-delay: -4s; }
+  .spot-card::before { animation: glow 6s ease-in-out infinite alternate; }
+  @keyframes glow { from { transform: translate(0, 0) scale(1); } to { transform: translate(-8%, 10%) scale(1.15); } }
+}

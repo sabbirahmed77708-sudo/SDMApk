@@ -71,18 +71,36 @@
     }).join("");
   }
 
-  // The hero shows up to nine of the newest apps as tiles.
+  // The hero shows the newest apps: one app as a spotlight card, several as tiles.
   function renderPhone() {
     var newest = S.apps.slice().sort(function (a, b) {
       return String(b.created_at).localeCompare(String(a.created_at)) || b.id - a.id;
     }).slice(0, 9);
     els.stage.hidden = newest.length === 0;
-    var html = newest.map(function (a) {
+    if (newest.length === 1) {
+      var a = newest[0];
+      var href = "/app/?id=" + encodeURIComponent(a.id);
+      var dl = SDM.safeUrl(a.download_url);
+      var shots = (a.screenshots || []).map(SDM.safeUrl).filter(Boolean).slice(0, 3);
+      var sub = SDM.esc(a.category || "Other") + (a.version ? " · v" + SDM.esc(String(a.version).replace(/^v/i, "")) : "");
+      els.home.className = "home spot";
+      els.home.innerHTML = '<li class="spot-card">' +
+        '<a class="spot-head" href="' + href + '"><span class="spot-icon">' + SDM.iconHTML(a) + "</span>" +
+        '<span class="spot-id"><span class="spot-name">' + SDM.esc(a.name) + '</span><span class="spot-meta">' + sub + "</span></span></a>" +
+        (a.description ? '<p class="spot-desc">' + SDM.esc(a.description) + "</p>" : "") +
+        (shots.length ? '<div class="spot-shots" aria-hidden="true">' + shots.map(function (u) {
+          return '<img src="' + SDM.esc(u) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">';
+        }).join("") + "</div>" : "") +
+        '<div class="spot-actions">' +
+        (dl ? '<a class="btn btn-primary" data-dl="' + a.id + '" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow" aria-label="Download ' + SDM.esc(a.name) + '">Download</a>' : "") +
+        '<a class="btn btn-ghost" href="' + href + '">Details</a></div></li>';
+      return;
+    }
+    els.home.className = "home" + (newest.length <= 4 ? " few" : "");
+    els.home.innerHTML = newest.map(function (a) {
       return '<li><a href="/app/?id=' + encodeURIComponent(a.id) + '">' + SDM.iconHTML(a) +
         '<span class="label">' + SDM.esc(a.name) + "</span></a></li>";
-    });
-    while (html.length < 6) html.push('<li aria-hidden="true"><span class="ghost"></span></li>');
-    els.home.innerHTML = html.join("");
+    }).join("");
   }
 
   function renderFeatured() {
