@@ -370,25 +370,3 @@ html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { 
 .hero-chips { justify-content: center; }
 .hero h1 em { font-style: normal; background: var(--glow); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero-count { text-align: center; }
-
-/* Intro: shown once per visit on the home page */
-.intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: #0b1020; color: #fff; transition: opacity 0.6s ease, visibility 0.6s; }
-.intro.out { opacity: 0; visibility: hidden; }
-.intro-in { width: min(86vw, 420px); }
-.intro-logo { width: 64px; height: 64px; display: block; margin-bottom: 18px; }
-.intro-name { position: relative; display: inline-block; overflow: hidden; font: 700 clamp(2.2rem, 9vw, 3rem)/1.1 var(--font-display); letter-spacing: -0.03em; }
-.intro-name span { background: var(--glow); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.intro-list { margin: 22px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; color: #aab3cf; font-weight: 500; }
-.intro-list li { display: flex; align-items: center; gap: 10px; opacity: 0; }
-.intro-list li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #ffc15e; }
-.intro-bar { height: 3px; margin-top: 30px; background: rgba(255, 255, 255, 0.12); border-radius: 3px; overflow: hidden; }
-.intro-bar i { display: block; height: 100%; width: 0; background: var(--glow); }
-@media (prefers-reduced-motion: no-preference) {
-  .intro-logo { animation: pop 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) backwards; }
-  .intro-name::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent); transform: translateX(-120%); animation: sweep 1.2s 0.6s ease; }
-  .intro-list li { animation: slidein 0.5s forwards; }
-  .intro-bar i { animation: fill 2.2s ease-out forwards; }
-  @keyframes sweep { to { transform: translateX(120%); } }
-  @keyframes slidein { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
-  @keyframes fill { to { width: 100%; } }
-}
