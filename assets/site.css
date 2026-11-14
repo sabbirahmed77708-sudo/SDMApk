@@ -370,3 +370,30 @@ html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { 
 .hero-chips { justify-content: center; }
 .hero h1 em { font-style: normal; background: var(--glow); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero-count { text-align: center; }
+
+/* Hero jellyfish (decorative) */
+.hero .wrap { position: relative; z-index: 1; }
+.jelly-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.jelly { position: absolute; height: auto; filter: drop-shadow(0 0 18px rgba(255, 107, 138, 0.4)); }
+.jelly .jbell { transform-box: fill-box; transform-origin: 50% 0; }
+.jelly .jt, .jelly .ja { fill: none; stroke-width: 3; stroke-linecap: round; transform-box: fill-box; transform-origin: 50% 0; }
+.jelly .ja { stroke-width: 5; }
+.j1 { width: 150px; left: 5%; top: 10%; }
+.j2 { width: 100px; right: 7%; top: 34%; opacity: 0.85; }
+.j3 { width: 62px; right: 28%; top: 5%; opacity: 0.55; }
+@media (max-width: 860px) { .j1 { width: 96px; left: -14px; top: 4%; opacity: 0.7; } .j2 { width: 74px; right: -8px; top: 52%; opacity: 0.6; } .j3 { display: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .j1 { animation: jfloat1 9s ease-in-out infinite; }
+  .j2 { animation: jfloat2 11s ease-in-out infinite; }
+  .j3 { animation: jfloat1 7s ease-in-out -3s infinite; }
+  .jelly .jbell { animation: jpulse 3.2s ease-in-out infinite; }
+  .j2 .jbell { animation-duration: 3.8s; animation-delay: -1s; }
+  .j3 .jbell { animation-duration: 2.8s; animation-delay: -2s; }
+  .jelly .jt { animation: jsway 3.2s ease-in-out infinite; }
+  .jelly .ja { animation: jsway 3.2s ease-in-out -0.4s infinite reverse; }
+  .jelly .jt2 { animation-delay: -0.3s; } .jelly .jt3 { animation-delay: -0.6s; } .jelly .jt4 { animation-delay: -0.9s; } .jelly .jt5 { animation-delay: -1.2s; }
+  @keyframes jpulse { 0%, 100% { transform: scale(1, 1); } 35% { transform: scale(1.1, 0.88); } 65% { transform: scale(0.95, 1.06); } }
+  @keyframes jsway { 0%, 100% { transform: rotate(-5deg) scaleY(1); } 50% { transform: rotate(6deg) scaleY(1.06); } }
+  @keyframes jfloat1 { 0%, 100% { transform: translate(0, 0) rotate(-3deg); } 50% { transform: translate(18px, -26px) rotate(3deg); } }
+  @keyframes jfloat2 { 0%, 100% { transform: translate(0, 0) rotate(4deg); } 50% { transform: translate(-22px, 24px) rotate(-4deg); } }
+}
