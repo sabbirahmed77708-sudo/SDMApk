@@ -434,3 +434,14 @@ html[lang="bn"] :where(body, h1, h2, h3, h4, button, input, select, textarea) { 
   .spot-card::before { animation: glow 6s ease-in-out infinite alternate; }
   @keyframes glow { from { transform: translate(0, 0) scale(1); } to { transform: translate(-8%, 10%) scale(1.15); } }
 }
+
+/* Two apps: two compact spotlight cards */
+.home.spot-duo { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.home.spot-duo .spot-card:nth-child(n) { margin-top: 0; padding: 18px; }
+.home.spot-duo .spot-card:hover { transform: none; }
+.home.spot-duo .spot-card { border-radius: 24px; }
+.home.spot-duo .spot-icon .icon-tile, .home.spot-duo .spot-icon .app-icon { width: 64px; height: 64px; border-radius: 19px; font-size: 1.7rem; }
+.home.spot-duo .spot-name { font-size: 1.25rem; }
+.home.spot-duo .spot-desc { -webkit-line-clamp: 2; margin-top: 10px; font-size: 0.92rem; }
+.home.spot-duo .spot-actions { margin-top: 14px; }
+.home.spot-duo .spot-actions .btn { min-height: 40px; }

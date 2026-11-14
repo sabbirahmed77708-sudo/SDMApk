@@ -77,23 +77,25 @@
       return String(b.created_at).localeCompare(String(a.created_at)) || b.id - a.id;
     }).slice(0, 9);
     els.stage.hidden = newest.length === 0;
-    if (newest.length === 1) {
-      var a = newest[0];
-      var href = "/app/?id=" + encodeURIComponent(a.id);
-      var dl = SDM.safeUrl(a.download_url);
-      var shots = (a.screenshots || []).map(SDM.safeUrl).filter(Boolean).slice(0, 3);
-      var sub = SDM.esc(a.category || "Other") + (a.version ? " · v" + SDM.esc(String(a.version).replace(/^v/i, "")) : "");
-      els.home.className = "home spot";
-      els.home.innerHTML = '<li class="spot-card">' +
-        '<a class="spot-head" href="' + href + '"><span class="spot-icon">' + SDM.iconHTML(a) + "</span>" +
-        '<span class="spot-id"><span class="spot-name">' + SDM.esc(a.name) + '</span><span class="spot-meta">' + sub + "</span></span></a>" +
-        (a.description ? '<p class="spot-desc">' + SDM.esc(a.description) + "</p>" : "") +
-        (shots.length ? '<div class="spot-shots" aria-hidden="true">' + shots.map(function (u) {
-          return '<img src="' + SDM.esc(u) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">';
-        }).join("") + "</div>" : "") +
-        '<div class="spot-actions">' +
-        (dl ? '<a class="btn btn-primary" data-dl="' + a.id + '" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow" aria-label="Download ' + SDM.esc(a.name) + '">Download</a>' : "") +
-        '<a class="btn btn-ghost" href="' + href + '">Details</a></div></li>';
+    if (newest.length <= 2) {
+      var solo = newest.length === 1;
+      els.home.className = "home spot" + (solo ? "" : " spot-duo");
+      els.home.innerHTML = newest.map(function (a) {
+        var href = "/app/?id=" + encodeURIComponent(a.id);
+        var dl = SDM.safeUrl(a.download_url);
+        var shots = solo ? (a.screenshots || []).map(SDM.safeUrl).filter(Boolean).slice(0, 3) : [];
+        var sub = SDM.esc(a.category || "Other") + (a.version ? " · v" + SDM.esc(String(a.version).replace(/^v/i, "")) : "");
+        return '<li class="spot-card">' +
+          '<a class="spot-head" href="' + href + '"><span class="spot-icon">' + SDM.iconHTML(a) + "</span>" +
+          '<span class="spot-id"><span class="spot-name">' + SDM.esc(a.name) + '</span><span class="spot-meta">' + sub + "</span></span></a>" +
+          (a.description ? '<p class="spot-desc">' + SDM.esc(a.description) + "</p>" : "") +
+          (shots.length ? '<div class="spot-shots" aria-hidden="true">' + shots.map(function (u) {
+            return '<img src="' + SDM.esc(u) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">';
+          }).join("") + "</div>" : "") +
+          '<div class="spot-actions">' +
+          (dl ? '<a class="btn btn-primary" data-dl="' + a.id + '" href="' + SDM.esc(dl) + '" target="_blank" rel="noopener noreferrer nofollow" aria-label="Download ' + SDM.esc(a.name) + '">Download</a>' : "") +
+          '<a class="btn btn-ghost" href="' + href + '">Details</a></div></li>';
+      }).join("");
       return;
     }
     els.home.className = "home" + (newest.length <= 4 ? " few" : "");
