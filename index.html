@@ -19,6 +19,7 @@
 <script src="/assets/theme.js"></script>
 </head>
 <body>
+<script src="/assets/intro.js"></script>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
 <div class="wrap bar">
@@ -41,7 +42,7 @@
 <div class="wrap">
 <div class="hero-text">
 <p class="hero-tag">Discover. Download. Enjoy.</p>
-<h1 id="hero-title">Find Your Next Favorite App.</h1>
+<h1 id="hero-title">Find Your Next <em>Favorite App.</em></h1>
 <p class="hero-copy">Discover amazing Android apps, explore useful categories, and find your next favorite APK in one simple place.</p>
 <form class="search-form" id="hero-search" role="search">
 <label class="sr-only" for="q">Search apps by name or description</label>
@@ -51,9 +52,6 @@
 <div class="hero-chips" id="hero-chips" role="group" aria-label="Browse by category"></div>
 <p class="hero-count" id="hero-count" aria-live="polite"></p>
 </div>
-<div class="hero-stage" id="hero-stage" hidden>
-<ul class="home" id="home-grid" aria-label="Apps on SdmApk"></ul>
-</div>
 </div>
 </section>
 
@@ -61,13 +59,6 @@
 <div class="wrap">
 <div class="section-head"><div><h2 id="featured-title">Featured apps</h2><p>The newest additions to SdmApk.</p></div></div>
 <div class="grid" id="featured"></div>
-</div>
-</section>
-
-<section class="section" id="categories-section" hidden aria-labelledby="categories-title">
-<div class="wrap" id="categories">
-<div class="section-head"><div><h2 id="categories-title">Categories</h2><p>Pick a category to filter the list below.</p></div></div>
-<div class="cat-grid" id="cat-grid"></div>
 </div>
 </section>
 
@@ -83,6 +74,13 @@
 <div class="grid" id="apps" aria-busy="true"></div>
 </div>
 </section>
+<section class="section" id="categories-section" hidden aria-labelledby="categories-title">
+<div class="wrap" id="categories">
+<div class="section-head"><div><h2 id="categories-title">Categories</h2><p>Pick a category to filter the list below.</p></div></div>
+<div class="cat-grid" id="cat-grid"></div>
+</div>
+</section>
+
 </main>
 <footer class="site-footer">
 <div class="wrap foot">
